@@ -1,6 +1,6 @@
 # MathorCup 2026 赛道 A：问题 2 工作约定
 
-本文件是问题二的持久工作指引。开始任何网络构建、模型解释、关键化合物筛选或论文撰写前，必须先完整阅读 `AGENTS.md`、`CONTEXT.md`、本文件以及 `freezes/problem1_v1/README.md`。若本文件与正式赛题附件冲突，以正式赛题文件为准，并记录冲突及处理方式。
+本文件是问题二的持久工作指引。开始任何网络构建、模型解释、关键化合物筛选或论文撰写前，必须先完整阅读 `AGENTS.md`、`CONTEXT.md`、本文件以及 `problem1/freezes/problem1_v1/README.md`。若本文件与正式赛题附件冲突，以正式赛题文件为准，并记录冲突及处理方式。
 
 ## 1. 问题二到底要解决什么
 
@@ -16,7 +16,7 @@
 
 ### 2.1 唯一冻结基线
 
-- 问题一冻结目录：`freezes/problem1_v1/`
+- 问题一冻结目录：`problem1/freezes/problem1_v1/`
 - Git 回滚标签：`q1-freeze-v1`
 - 当前冠军：`q1_newseed2031_final_hybrid_v2`
 - 当前状态：`HOLD`，自动门槛通过 7/9。
@@ -29,7 +29,7 @@
 - B 级目标：允许给出“中等可信”的 Top-3；结论需向化学模块层面收缩，并明确问题一预测能力有限。
 - C 级目标：只作探索性解释。如果稳定性不够，正式结论应写“当前数据不足以支持可靠 Top-3”，不得为了填满表格而强行排名。
 
-目标等级和最终模型来源以 `freezes/problem1_v1/source_registry.csv` 为准，不得从旧实验目录或单次最好结果自行替换。
+目标等级和最终模型来源以 `problem1/freezes/problem1_v1/source_registry.csv` 为准，不得从旧实验目录或单次最好结果自行替换。
 
 ### 2.3 必须解释真实冠军，而不是方便的代理模型
 
@@ -251,7 +251,7 @@
 
 ## 14. 当前状态
 
-- 问题一冠军及其必要 OOF、指标、折、配置和来源映射已冻结在 `freezes/problem1_v1/`。
+- 问题一冠军及其必要 OOF、指标、折、配置和来源映射已冻结在 `problem1/freezes/problem1_v1/`。
 - 问题二前置已完成：数据合同、字段字典、问题一逐目标重建配方、协议配置和短时审计测试已建立。
 - 正式网络 bootstrap、验证折置换重要性、TreeSHAP 和 Top-3 选择尚未开始；前置阶段不生成正式 Top-3。
 - 下一项实现任务是用冻结外层折重建 2--3 个示范目标的真实冠军模型，并验证重建预测与冻结 OOF 的数值一致性。
@@ -260,11 +260,11 @@
 
 ### 15.1 已建立的文件
 
-- `configs/problem2_preflight.yaml`：问题二数据路径、冻结接口、网络阈值、FDR、bootstrap、置换次数和稳定性门槛。
-- `configs/problem2_q1_reconstruction_registry.csv`：30 个主目标逐目标重建配方，包含真实来源模型、配置、折内特征筛选、后处理和融合方式。
-- `src/beer_q2/preflight.py`：只读数据合同、附件2网络结构核验、附件1/2字段映射、冻结 OOF/折/来源完整性检查。
-- `scripts/prepare_problem2_preflight.py`：可复现的短时前置入口。
-- `tests/test_problem2_preflight.py`：字段顺序/别名和30目标重建注册表测试。
+- `problem2/configs/problem2_preflight.yaml`：问题二数据路径、冻结接口、网络阈值、FDR、bootstrap、置换次数和稳定性门槛。
+- `problem2/configs/problem2_q1_reconstruction_registry.csv`：30 个主目标逐目标重建配方，包含真实来源模型、配置、折内特征筛选、后处理和融合方式。
+- `problem2/src/beer_q2/preflight.py`：只读数据合同、附件2网络结构核验、附件1/2字段映射、冻结 OOF/折/来源完整性检查。
+- `problem2/scripts/prepare_problem2_preflight.py`：可复现的短时前置入口。
+- `problem2/tests/test_problem2_preflight.py`：字段顺序/别名和30目标重建注册表测试。
 
 运行命令：
 
@@ -274,7 +274,7 @@ conda activate /home/yu/桌面/A/.conda/envs/beer-q1
 export MPLCONFIGDIR=/tmp/beer_q2_mpl
 export PYTHONPATH=src
 python -m pytest -q
-python scripts/prepare_problem2_preflight.py --config configs/problem2_preflight.yaml
+python problem2/scripts/prepare_problem2_preflight.py --config problem2/configs/problem2_preflight.yaml
 ```
 
 ### 15.2 环境核验
@@ -318,9 +318,9 @@ python scripts/prepare_problem2_preflight.py --config configs/problem2_preflight
 
 ### 16.2 已建立的实现
 
-- `src/beer_q2/reconstruct.py`：读取冻结折、冻结调参轨迹和逐目标来源，训练折内重建模型并逐行比较 OOF。
-- `scripts/check_q1_reconstruction.py`：短时示范和完整重复验证入口。
-- `tests/test_problem2_reconstruct.py`：一重复三折的快速一致性测试。
+- `problem2/src/beer_q2/reconstruct.py`：读取冻结折、冻结调参轨迹和逐目标来源，训练折内重建模型并逐行比较 OOF。
+- `problem2/scripts/check_q1_reconstruction.py`：短时示范和完整重复验证入口。
+- `problem2/tests/test_problem2_reconstruct.py`：一重复三折的快速一致性测试。
 
 完整验证命令：
 
@@ -329,7 +329,7 @@ cd /home/yu/桌面/A
 conda activate /home/yu/桌面/A/.conda/envs/beer-q1
 export MPLCONFIGDIR=/tmp/beer_q2_mpl
 export PYTHONPATH=src
-python scripts/check_q1_reconstruction.py \
+python problem2/scripts/check_q1_reconstruction.py \
   --repeats 0-6 \
   --output artifacts/problem2/q1_reconstruction_v1
 ```

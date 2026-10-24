@@ -4,6 +4,13 @@
 
 实现遵守 `AGENTS.md`：只按整数 `beer` 对齐，风格只用于折叠、基线和误差分析，所有填补、缩放、PLS 与超参数选择都在训练折内部完成。
 
+## 目录边界
+
+- `problem1/`：问题一的配置、代码、测试、协议和冻结成果；
+- `problem2/`：问题二的前置审计、问题一冠军重建接口、网络与解释代码；
+- `problem3/`：问题三的预留目录，开始实现前需新增对应工作约定；
+- 根目录：共享数据说明、持久工作约定、项目构建文件和跨问题入口。
+
 ## 当前最新结果
 
 当前严格冠军为 `q1_newseed2031_final_hybrid_v2`：以折内调参的多输出 Extra Trees 为主体，并仅纳入已经独立新种子确认的 13 个逐目标替换或后处理源。在 `20311124` 起始的 7 个重复外层折上，中位 R2=0.1721、Spearman=0.4103、RMSE=0.4800，相对全局/风格基线分别改善 9.33%/4.46%，A=13、A/B=24。阶段状态仍为 `HOLD`。
@@ -16,13 +23,13 @@
 
 ```bash
 cd /home/yu/桌面/A
-export PYTHONPATH=/home/yu/桌面/A/src
+export PYTHONPATH=/home/yu/桌面/A/problem1/src:/home/yu/桌面/A/problem2/src
 conda run -p /home/yu/桌面/A/.conda/envs/beer-q1 \
   python -m pytest
 
 conda run -p /home/yu/桌面/A/.conda/envs/beer-q1 \
   python -m beer_q1.cli audit \
-  --config configs/problem1_screening.yaml
+  --config problem1/configs/problem1_screening.yaml
 ```
 
 也可以做一次本地可编辑安装，之后无需设置 `PYTHONPATH`：
@@ -39,7 +46,7 @@ conda run -p /home/yu/桌面/A/.conda/envs/beer-q1 \
 ```bash
 conda run --no-capture-output -p /home/yu/桌面/A/.conda/envs/beer-q1 \
   python -m beer_q1.cli run \
-  --config configs/problem1_screening.yaml \
+  --config problem1/configs/problem1_screening.yaml \
   --smoke \
   --run-id smoke_q1
 ```
@@ -50,11 +57,11 @@ conda run --no-capture-output -p /home/yu/桌面/A/.conda/envs/beer-q1 \
 
 ```bash
 cd /home/yu/桌面/A
-export PYTHONPATH=/home/yu/桌面/A/src
+export PYTHONPATH=/home/yu/桌面/A/problem1/src:/home/yu/桌面/A/problem2/src
 export MPLCONFIGDIR=/tmp/beer-q1-matplotlib
 conda run --no-capture-output -p /home/yu/桌面/A/.conda/envs/beer-q1 \
   python -m beer_q1.cli run \
-  --config configs/problem1_screening.yaml \
+  --config problem1/configs/problem1_screening.yaml \
   --run-id q1_screening_v1
 ```
 
@@ -62,11 +69,11 @@ conda run --no-capture-output -p /home/yu/桌面/A/.conda/envs/beer-q1 \
 
 ```bash
 cd /home/yu/桌面/A
-export PYTHONPATH=/home/yu/桌面/A/src
+export PYTHONPATH=/home/yu/桌面/A/problem1/src:/home/yu/桌面/A/problem2/src
 export MPLCONFIGDIR=/tmp/beer-q1-matplotlib
 conda run --no-capture-output -p /home/yu/桌面/A/.conda/envs/beer-q1 \
   python -m beer_q1.cli run \
-  --config configs/problem1_full.yaml \
+  --config problem1/configs/problem1_full.yaml \
   --run-id q1_full_v1
 ```
 
