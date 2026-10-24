@@ -1,0 +1,40 @@
+{
+  "base_seed": 20311124,
+  "parent_hybrid": "q1_newseed2031_final_hybrid_v1",
+  "new_replacement": {
+    "A_esters_all": "fixed_gradient_boosting"
+  },
+  "replacement_count": 13,
+  "independent_confirmation": "q1_a_esters_all_gbr_confirmation_v1 (base seed 20351124)",
+  "selection_note": "Only the independently confirmed locked source was added; no 2031 target/model selection was performed.",
+  "base_stage_gate": {
+    "median_r2": 0.16716994288082224,
+    "median_spearman": 0.4103369499820462,
+    "median_rmse": 0.48417158387965,
+    "median_improvement_vs_global": 0.09116961582110905,
+    "median_improvement_vs_style": 0.035081870122446734,
+    "positive_r2_share": 1.0,
+    "majority_positive_direction_share": 1.0,
+    "grade_a_count": 6,
+    "grade_ab_count": 22,
+    "n_targets": 30,
+    "all_automated_checks_passed": false,
+    "status": "HOLD",
+    "note": "A grades use an automated residual proxy; residual plots still require human review."
+  },
+  "hybrid_stage_gate": {
+    "median_r2": 0.17206537945970177,
+    "median_spearman": 0.4103369499820462,
+    "median_rmse": 0.48004170094125015,
+    "median_improvement_vs_global": 0.0933240714834993,
+    "median_improvement_vs_style": 0.04463888950091738,
+    "positive_r2_share": 1.0,
+    "majority_positive_direction_share": 1.0,
+    "grade_a_count": 13,
+    "grade_ab_count": 24,
+    "n_targets": 30,
+    "all_automated_checks_passed": false,
+    "status": "HOLD",
+    "note": "A grades use an automated residual proxy; residual plots still require human review."
+  }
+}

@@ -1,0 +1,21 @@
+# Independent confirmation of the sole predeclared C-grade discovery winner:
+# A_hops_woody.  All other target outputs are audit-only.
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+  target_scope: main
+validation: {outer_splits: 3, outer_repeats: 7, inner_splits: 2, base_seed: 20331124}
+runtime: {output_root: artifacts/problem1, n_jobs: 1, save_models: false}
+models:
+  enabled: [global_mean, style_mean, extra_trees, extra_trees_paired]
+  grids:
+    extra_trees:
+      - {n_estimators: 250, max_features: "sqrt", min_samples_leaf: 5}
+      - {n_estimators: 250, max_features: 0.5, min_samples_leaf: 5}
+      - {n_estimators: 400, max_features: "sqrt", min_samples_leaf: 2}
+      - {n_estimators: 400, max_features: 0.5, min_samples_leaf: 2}
+    extra_trees_paired:
+      - {n_estimators: 250, max_features: 0.5, min_samples_leaf: 5, random_state_override: 20331124}

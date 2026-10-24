@@ -1,0 +1,40 @@
+# Independent confirmation of the revised affine-calibration mechanism.
+#
+# The discovery screen used training-range clipping.  Because clipping creates
+# tied extreme predictions and can lower Spearman, this confirmation removes
+# clipping while retaining positive bounded slopes (0.8--1.5) and 50% shrinkage
+# toward the identity.  A positive affine map preserves rank order exactly.
+#
+# Predeclared primary targets (before this run):
+#   F_hops_all, A_hops_all, A_hops_noble, F_esters_ethac, A_esters_all
+# A_hops_tropical is explicitly rejected from confirmation after discovery.
+# Per-target confirmation requires all of:
+#   mean RMSE gain >= 1%; calibrated model wins >= 5/7 repeats;
+#   median Spearman delta >= -1e-12; absolute residual-prediction correlation
+#   is reduced in >= 5/7 repeats; final A/B/C grade does not worsen.
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: "beer"
+  style_column: "tasting_category_fine"
+  forbidden_input_columns: ["beer", "beer_id", "tasting_category_fine"]
+  target_scope: "main"
+
+validation:
+  outer_splits: 3
+  outer_repeats: 7
+  inner_splits: 2
+  base_seed: 20301124
+
+runtime:
+  output_root: "artifacts/problem1"
+  n_jobs: 1
+  save_models: false
+
+models:
+  enabled: [global_mean, style_mean, extra_trees, extra_trees_affine_calibrated]
+  grids:
+    extra_trees:
+      - {n_estimators: 250, max_features: 0.5, min_samples_leaf: 5, random_state_override: 20301124}
+    extra_trees_affine_calibrated:
+      - {n_estimators: 250, max_features: 0.5, min_samples_leaf: 5, random_state_override: 20301124, calibration_splits: 3, identity_weight: 0.5, slope_min: 0.8, slope_max: 1.5, clip_to_training_range: false}

@@ -1,0 +1,12 @@
+freeze_date=2026-10-24
+platform=linux-64
+conda_env=/home/yu/桌面/A/.conda/envs/beer-q1
+python=3.9.18
+numpy=1.24.3
+pandas=1.5.3
+scipy=1.10.1
+scikit-learn=1.2.2
+joblib=1.2.0
+pyarrow=12.0.1
+PyYAML=6.0.1
+matplotlib=3.7.3

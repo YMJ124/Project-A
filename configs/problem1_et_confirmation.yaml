@@ -1,0 +1,36 @@
+# Extra Trees confirmation run on ten entirely new outer-CV seeds.
+# This run protects the screening metrics that already passed and isolates the
+# effect of removing unstable cross-family switching. Expected runtime <5 min.
+# AI-assisted configuration draft (OpenAI Codex, GPT-5, 2026-10-24).
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: "beer"
+  style_column: "tasting_category_fine"
+  forbidden_input_columns: ["beer", "beer_id", "tasting_category_fine"]
+  target_scope: "main"
+
+validation:
+  outer_splits: 3
+  outer_repeats: 10
+  inner_splits: 2
+  # Deliberately disjoint from the 20261024 screening sequence.
+  base_seed: 20271124
+
+runtime:
+  output_root: "artifacts/problem1"
+  n_jobs: 1
+  save_models: false
+
+models:
+  enabled:
+    - global_mean
+    - style_mean
+    - extra_trees
+  grids:
+    # Simplicity order matters for the one-standard-error rule.
+    extra_trees:
+      - {n_estimators: 250, max_features: "sqrt", min_samples_leaf: 5}
+      - {n_estimators: 250, max_features: 0.5, min_samples_leaf: 5}
+      - {n_estimators: 400, max_features: "sqrt", min_samples_leaf: 2}
+      - {n_estimators: 400, max_features: 0.5, min_samples_leaf: 2}

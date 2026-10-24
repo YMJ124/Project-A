@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "beer-q1"
+version = "0.1.0"
+description = "Leakage-safe modeling for MathorCup 2026 Track A, Question 1"
+requires-python = ">=3.9,<3.11"
+dependencies = [
+  "joblib==1.2.0",
+  "matplotlib==3.7.3",
+  "numpy==1.24.3",
+  "pandas==1.5.3",
+  "pyarrow==12.0.1",
+  "PyYAML==6.0.1",
+  "scikit-learn==1.2.2",
+  "scipy==1.10.1",
+]
+
+[project.optional-dependencies]
+boosting = [
+  "catboost==1.2.5",
+  "xgboost==1.7.3",
+]
+test = ["pytest==7.4.4"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"

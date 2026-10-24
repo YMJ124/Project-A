@@ -1,0 +1,10 @@
+criterion,observed,operator,threshold,passed
+median_r2,0.16716994288082224,>=,0.15,True
+median_spearman,0.4103369499820462,>=,0.35,True
+median_rmse,0.48417158387965,<=,0.92,True
+median_improvement_vs_global,0.09116961582110905,>=,0.08,True
+median_improvement_vs_style,0.035081870122446734,>=,0.05,False
+positive_r2_share,1.0,>=,0.7,True
+majority_positive_direction_share,1.0,>=,0.8,True
+grade_a_count,6.0,>=,18.0,False
+grade_ab_count,22.0,>=,24.0,False

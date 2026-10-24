@@ -1,0 +1,32 @@
+# Ten-repeat fixed GBR confirmation on the exact ET-confirmation folds.
+# Repeats 0-2 are discovery evidence; repeats 3-9 are reserved confirmation
+# evidence for the predeclared target-specific challenger rule.
+# AI-assisted configuration draft (OpenAI Codex, GPT-5, 2026-10-24).
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: "beer"
+  style_column: "tasting_category_fine"
+  forbidden_input_columns: ["beer", "beer_id", "tasting_category_fine"]
+  target_scope: "main"
+
+validation:
+  outer_splits: 3
+  outer_repeats: 10
+  inner_splits: 2
+  base_seed: 20271124
+
+runtime:
+  output_root: "artifacts/problem1"
+  n_jobs: 1
+  save_models: false
+
+models:
+  fixed_without_inner_cv: true
+  enabled:
+    - global_mean
+    - style_mean
+    - gradient_boosting
+  grids:
+    gradient_boosting:
+      - {n_estimators: 150, learning_rate: 0.03, max_depth: 1, min_samples_leaf: 8}

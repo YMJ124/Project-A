@@ -1,0 +1,24 @@
+# Competition inputs and data-derived artifacts stay local/private.
+artifacts/
+models/
+oof/
+submissions/
+remote_outputs/
+2026年MathorCup大数据挑战赛-赛道A初赛/
+*.pkl
+*.joblib
+
+# Local environments and caches.
+.conda/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.agents/
+.codex/
+.vscode/
+
+# Local plotting cache.
+.mplconfig/

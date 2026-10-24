@@ -1,0 +1,38 @@
+# Random-Forest-only paired screening against the existing ET evidence.
+# The Nature paper reports RF among the strongest tree families; this run
+# changes only that model family and keeps the established CV protocol.
+# Expected runtime is checked during execution and must be stopped if it is
+# projected to exceed five minutes.
+# AI-assisted configuration draft (OpenAI Codex, GPT-5, 2026-10-24).
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: "beer"
+  style_column: "tasting_category_fine"
+  forbidden_input_columns: ["beer", "beer_id", "tasting_category_fine"]
+  target_scope: "main"
+
+validation:
+  outer_splits: 3
+  outer_repeats: 3
+  inner_splits: 2
+  # Paired with the original screening folds for direct challenger analysis.
+  base_seed: 20261024
+
+runtime:
+  output_root: "artifacts/problem1"
+  n_jobs: 1
+  save_models: false
+
+models:
+  enabled:
+    - global_mean
+    - style_mean
+    - random_forest
+  grids:
+    # Candidate order is the one-standard-error simplicity order.
+    random_forest:
+      - {n_estimators: 350, max_features: "sqrt", min_samples_leaf: 5}
+      - {n_estimators: 350, max_features: 0.5, min_samples_leaf: 5}
+      - {n_estimators: 500, max_features: "sqrt", min_samples_leaf: 2}
+      - {n_estimators: 500, max_features: 0.5, min_samples_leaf: 2}

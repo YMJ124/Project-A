@@ -1,0 +1,77 @@
+# Long run: expected to exceed five minutes. Run manually.
+# AI-assisted configuration draft (OpenAI Codex, GPT-5, 2026-10-24).
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: "beer"
+  style_column: "tasting_category_fine"
+  forbidden_input_columns: ["beer", "beer_id", "tasting_category_fine"]
+  target_scope: "main"
+
+validation:
+  outer_splits: 3
+  outer_repeats: 10
+  inner_splits: 2
+  base_seed: 20261024
+
+runtime:
+  output_root: "artifacts/problem1"
+  n_jobs: 1
+  save_models: false
+
+models:
+  enabled:
+    - global_mean
+    - style_mean
+    - ridge
+    - elastic_net
+    - pls1
+    - pls2
+    - gradient_boosting
+    - random_forest
+    - extra_trees
+    - xgboost
+  grids:
+    ridge:
+      - {alpha: 1000.0}
+      - {alpha: 100.0}
+      - {alpha: 10.0}
+      - {alpha: 1.0}
+      - {alpha: 0.1}
+    elastic_net:
+      - {alpha: 0.1, l1_ratio: 0.1}
+      - {alpha: 0.1, l1_ratio: 0.5}
+      - {alpha: 0.03, l1_ratio: 0.1}
+      - {alpha: 0.03, l1_ratio: 0.5}
+      - {alpha: 0.01, l1_ratio: 0.5}
+      - {alpha: 0.01, l1_ratio: 0.9}
+    pls1:
+      - {n_components: 2}
+      - {n_components: 5}
+      - {n_components: 10}
+      - {n_components: 15}
+      - {n_components: 20}
+    pls2:
+      - {n_components: 2}
+      - {n_components: 5}
+      - {n_components: 10}
+      - {n_components: 15}
+      - {n_components: 20}
+    gradient_boosting:
+      - {n_estimators: 150, learning_rate: 0.03, max_depth: 1, min_samples_leaf: 8}
+      - {n_estimators: 250, learning_rate: 0.03, max_depth: 2, min_samples_leaf: 8}
+      - {n_estimators: 250, learning_rate: 0.05, max_depth: 2, min_samples_leaf: 5}
+    random_forest:
+      - {n_estimators: 350, max_features: "sqrt", min_samples_leaf: 5}
+      - {n_estimators: 350, max_features: 0.5, min_samples_leaf: 5}
+      - {n_estimators: 500, max_features: "sqrt", min_samples_leaf: 2}
+      - {n_estimators: 500, max_features: 0.5, min_samples_leaf: 2}
+    extra_trees:
+      - {n_estimators: 350, max_features: "sqrt", min_samples_leaf: 5}
+      - {n_estimators: 350, max_features: 0.5, min_samples_leaf: 5}
+      - {n_estimators: 500, max_features: "sqrt", min_samples_leaf: 2}
+      - {n_estimators: 500, max_features: 0.5, min_samples_leaf: 2}
+    xgboost:
+      - {n_estimators: 250, learning_rate: 0.03, max_depth: 1, min_child_weight: 8, subsample: 0.8, colsample_bytree: 0.7, reg_lambda: 10.0, tree_method: "hist"}
+      - {n_estimators: 350, learning_rate: 0.03, max_depth: 2, min_child_weight: 8, subsample: 0.8, colsample_bytree: 0.7, reg_lambda: 10.0, tree_method: "hist"}
+      - {n_estimators: 350, learning_rate: 0.05, max_depth: 2, min_child_weight: 5, subsample: 0.8, colsample_bytree: 0.8, reg_lambda: 5.0, tree_method: "hist"}

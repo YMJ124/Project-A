@@ -1,0 +1,15 @@
+{
+  "median_r2": 0.17206537945970177,
+  "median_spearman": 0.4103369499820462,
+  "median_rmse": 0.48004170094125015,
+  "median_improvement_vs_global": 0.0933240714834993,
+  "median_improvement_vs_style": 0.04463888950091738,
+  "positive_r2_share": 1.0,
+  "majority_positive_direction_share": 1.0,
+  "grade_a_count": 13,
+  "grade_ab_count": 24,
+  "n_targets": 30,
+  "all_automated_checks_passed": false,
+  "status": "HOLD",
+  "note": "A grades use an automated residual proxy; residual plots still require human review."
+}

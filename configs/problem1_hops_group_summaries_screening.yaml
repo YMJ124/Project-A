@@ -1,0 +1,24 @@
+# Keep every chemical input and append three fold-standardized literature
+# summaries: citrus synergy, broader monoterpenes, and sesquiterpenes.
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+  target_scope: main
+  target_names: [A_hops_all, A_hops_citrus, A_hops_tropical, A_hops_noble, A_hops_woody, F_hops_all, F_hops_citrus, F_hops_tropical, F_hops_noble, F_hops_woody]
+validation: {outer_splits: 3, outer_repeats: 3, inner_splits: 2, base_seed: 20451124}
+runtime: {output_root: artifacts/problem1, n_jobs: 1, save_models: false}
+models:
+  fixed_without_inner_cv: true
+  enabled: [global_mean, style_mean, extra_trees_targetwise_group_summaries]
+  grids:
+    extra_trees_targetwise_group_summaries:
+      - n_estimators: 250
+        max_features: 0.5
+        min_samples_leaf: 5
+        groups:
+          - [94, 120, 127]
+          - [72, 73, 77, 78, 79, 83, 91, 92, 93, 94, 100, 102, 103, 105, 107, 109, 111, 114, 117, 120, 121, 127]
+          - [153, 154, 157, 159, 161, 163, 165, 170, 172, 175, 177, 178, 180, 181, 182, 183, 185, 186, 187, 188, 189, 191, 192, 193, 195, 196, 197, 198, 199, 202, 203, 204, 205, 206, 207, 208, 209]

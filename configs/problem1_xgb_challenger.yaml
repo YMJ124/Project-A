@@ -1,0 +1,34 @@
+# XGBoost-only paired screening.  The legacy xgboost 1.7.3 environment uses
+# CPU hist because its gpu_hist path did not complete on the local RTX 5070.
+# Stop and hand off to the user if the first-fold runtime projects >5 minutes.
+# AI-assisted configuration draft (OpenAI Codex, GPT-5, 2026-10-24).
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: "beer"
+  style_column: "tasting_category_fine"
+  forbidden_input_columns: ["beer", "beer_id", "tasting_category_fine"]
+  target_scope: "main"
+
+validation:
+  outer_splits: 3
+  outer_repeats: 3
+  inner_splits: 2
+  base_seed: 20261024
+
+runtime:
+  output_root: "artifacts/problem1"
+  n_jobs: 1
+  save_models: false
+
+models:
+  enabled:
+    - global_mean
+    - style_mean
+    - xgboost
+  grids:
+    # Strongly regularized shallow trees for n=250, p=231.
+    xgboost:
+      - {n_estimators: 250, learning_rate: 0.03, max_depth: 1, min_child_weight: 8, subsample: 0.8, colsample_bytree: 0.7, reg_lambda: 10.0, tree_method: "hist"}
+      - {n_estimators: 350, learning_rate: 0.03, max_depth: 2, min_child_weight: 8, subsample: 0.8, colsample_bytree: 0.7, reg_lambda: 10.0, tree_method: "hist"}
+      - {n_estimators: 350, learning_rate: 0.05, max_depth: 2, min_child_weight: 5, subsample: 0.8, colsample_bytree: 0.8, reg_lambda: 5.0, tree_method: "hist"}

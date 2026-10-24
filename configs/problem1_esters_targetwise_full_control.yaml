@@ -1,0 +1,17 @@
+# Same ester targets, folds and targetwise ET parameters; all inputs retained.
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+  target_scope: main
+  target_names: [A_esters_all, A_esters_ethac, A_esters_isoaa, A_esters_flower, A_esters_fruity, F_esters_all, F_esters_ethac, F_esters_isoaa, F_esters_flower, F_esters_fruity]
+validation: {outer_splits: 3, outer_repeats: 3, inner_splits: 2, base_seed: 20441124}
+runtime: {output_root: artifacts/problem1, n_jobs: 1, save_models: false}
+models:
+  fixed_without_inner_cv: true
+  enabled: [global_mean, style_mean, extra_trees_targetwise]
+  grids:
+    extra_trees_targetwise:
+      - {n_estimators: 250, max_features: 0.5, min_samples_leaf: 5}
