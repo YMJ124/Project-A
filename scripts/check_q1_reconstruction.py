@@ -1,0 +1,34 @@
+"""Check that representative frozen Q1 models can be reconstructed exactly."""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from beer_q2.reconstruct import DEFAULT_TARGETS, reconstruct_and_compare
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repeats", default="0-6", help="inclusive repeat range, e.g. 0-0 or 0-6")
+    parser.add_argument("--tolerance", type=float, default=1e-9)
+    parser.add_argument("--output", default="artifacts/problem2/q1_reconstruction_v1")
+    parser.add_argument("--targets", nargs="+", default=DEFAULT_TARGETS)
+    args = parser.parse_args()
+    start, end = (int(value) for value in args.repeats.split("-", maxsplit=1))
+    root = Path(__file__).resolve().parents[1]
+    result = reconstruct_and_compare(
+        root,
+        targets=args.targets,
+        repeats=range(start, end + 1),
+        tolerance=args.tolerance,
+        output_dir=root / args.output,
+    )
+    print(result.to_string(index=False))
+    if not bool(result["passed_tolerance"].all()):
+        raise SystemExit("Q1 reconstruction consistency check FAILED")
+    print("Q1 reconstruction consistency check PASSED")
+
+
+if __name__ == "__main__":
+    main()

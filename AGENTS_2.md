@@ -305,3 +305,44 @@ python scripts/prepare_problem2_preflight.py --config configs/problem2_preflight
 - “字段顺序一致”只解决附件1到附件2网络节点的索引对齐，不代表化学名称、单位或作用机制已经得到文献确认；名称和单位仍需在正式解释前核对附件8及论文。
 - 问题一最终模型没有把模型文件保存进冻结快照；问题二必须按重建注册表重新拟合每个训练折，不能从冻结 OOF 反推模型内部解释。
 - 任何超过5分钟的全量重建、网络 bootstrap、30目标置换或 SHAP 计算，先由代理完成短时冒烟和命令校验，再交由用户运行。
+
+## 16. 问题一真实模型重建一致性记录（2026-10-24）
+
+### 16.1 目的与代表目标
+
+这一步只验证问题二能否重新得到问题一冠军的真实预测，不进行新模型选择、不修改问题一成绩，也不产生化合物 Top-3。代表目标固定为：
+
+- A 级：`A_hops_all`，真实来源为折内交叉拟合正斜率仿射校准 ET；
+- B 级：`F_esters_isoaa`，真实来源为多输出 ET 与逐目标 ET 的固定 50/50 融合；
+- C 级：`A_hops_woody`，真实来源为折内调参多输出 ET。
+
+### 16.2 已建立的实现
+
+- `src/beer_q2/reconstruct.py`：读取冻结折、冻结调参轨迹和逐目标来源，训练折内重建模型并逐行比较 OOF。
+- `scripts/check_q1_reconstruction.py`：短时示范和完整重复验证入口。
+- `tests/test_problem2_reconstruct.py`：一重复三折的快速一致性测试。
+
+完整验证命令：
+
+```bash
+cd /home/yu/桌面/A
+conda activate /home/yu/桌面/A/.conda/envs/beer-q1
+export MPLCONFIGDIR=/tmp/beer_q2_mpl
+export PYTHONPATH=src
+python scripts/check_q1_reconstruction.py \
+  --repeats 0-6 \
+  --output artifacts/problem2/q1_reconstruction_v1
+```
+
+### 16.3 结果
+
+- 7 次重复 × 3 个外层折 × 3 个目标，共 63 个目标—折比较全部通过。
+- 三个目标的每个外层折最大绝对预测误差均为 `0.0`，均方根差异也为 `0.0`。
+- 仿射校准、固定融合和基础调参 ET 三种来源均已成功复原。
+- 结果文件：`artifacts/problem2/q1_reconstruction_v1/reconstruction_comparison.csv` 和 `reconstruction_summary.json`。
+
+首次短时检查曾失败，原因是重建读取器把调参轨迹中两个内层折的相同 `selected` 参数误判为多组参数，退回了错误的默认参数；修正为按 `params_json` 去重后重新运行，所有重复均通过。该问题属于接口读取错误，不是模型或数据不稳定，修正后未改变冻结冠军。
+
+### 16.4 进入问题二框架的条件
+
+该一致性检查已通过，因此可以进入问题二解释框架搭建。下一步仍须遵守：先实现验证折置换的单目标短时示范和网络节点/社区数据结构，再扩展到全部30个目标；不得直接把此次重建结果当作化学重要性结论。
