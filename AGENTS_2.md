@@ -252,5 +252,56 @@
 ## 14. 当前状态
 
 - 问题一冠军及其必要 OOF、指标、折、配置和来源映射已冻结在 `freezes/problem1_v1/`。
-- 问题二目前处于方案冻结阶段，尚未开始正式网络或解释计算。
-- 第一项实现任务应是问题二数据合同、冻结来源加载器和网络计算口径核验；在这些测试通过前，不生成正式 Top-3。
+- 问题二前置已完成：数据合同、字段字典、问题一逐目标重建配方、协议配置和短时审计测试已建立。
+- 正式网络 bootstrap、验证折置换重要性、TreeSHAP 和 Top-3 选择尚未开始；前置阶段不生成正式 Top-3。
+- 下一项实现任务是用冻结外层折重建 2--3 个示范目标的真实冠军模型，并验证重建预测与冻结 OOF 的数值一致性。
+
+## 15. 问题二前置完成记录（2026-10-24）
+
+### 15.1 已建立的文件
+
+- `configs/problem2_preflight.yaml`：问题二数据路径、冻结接口、网络阈值、FDR、bootstrap、置换次数和稳定性门槛。
+- `configs/problem2_q1_reconstruction_registry.csv`：30 个主目标逐目标重建配方，包含真实来源模型、配置、折内特征筛选、后处理和融合方式。
+- `src/beer_q2/preflight.py`：只读数据合同、附件2网络结构核验、附件1/2字段映射、冻结 OOF/折/来源完整性检查。
+- `scripts/prepare_problem2_preflight.py`：可复现的短时前置入口。
+- `tests/test_problem2_preflight.py`：字段顺序/别名和30目标重建注册表测试。
+
+运行命令：
+
+```bash
+cd /home/yu/桌面/A
+conda activate /home/yu/桌面/A/.conda/envs/beer-q1
+export MPLCONFIGDIR=/tmp/beer_q2_mpl
+export PYTHONPATH=src
+python -m pytest -q
+python scripts/prepare_problem2_preflight.py --config configs/problem2_preflight.yaml
+```
+
+### 15.2 环境核验
+
+问题二解释依赖已在 `beer-q1` 环境中可导入：
+
+- `networkx 3.2.1`
+- `shap 0.45.0`
+- `igraph 0.11.9`
+- `leidenalg 0.10.2`
+
+原问题一的 26 项测试加问题二新增 2 项测试均已通过。`MPLCONFIGDIR` 使用可写临时目录，是为了避免受限环境下 matplotlib/fontconfig 写缓存产生噪声；它不参与模型计算。
+
+### 15.3 前置审计结果
+
+- 样本：250；化学/理化输入：231；主目标：30；总目标：50；风格：22。
+- 附件1缺失值：73 个，仍按问题一折内填补规则处理；没有修改原始附件。
+- 附件2网络：231×231，对称、对角线为1，行列节点数与模型特征数一致。
+- 附件6参照表：44行；附件8工作簿：7个sheet，名称和阈值资料可用。
+- 冻结问题一 OOF：52,500 行（250×7×30）；冻结折：1,750 行（250×7）。
+- 冻结来源注册表和问题二重建注册表均覆盖30个主目标，等级与来源一致。
+- 字段映射：210 个名称和顺序一致，18 个由预先声明的缩写/汇总别名确认，3 个为部分名称相似；没有未处理的顺序错位。
+- 输入哈希已记录在 `artifacts/problem2/preflight_v1/data_audit.json`，其中附件1和4哈希必须继续与问题一冻结记录一致。
+- 当前审计输出：`artifacts/problem2/preflight_v1/`，包含 `data_audit.json`、`field_dictionary.csv`、`q1_reconstruction_registry_resolved.csv` 和 `protocol.resolved.yaml`。该目录由 `.gitignore` 排除，正式精简结果另行提交。
+
+### 15.4 前置边界
+
+- “字段顺序一致”只解决附件1到附件2网络节点的索引对齐，不代表化学名称、单位或作用机制已经得到文献确认；名称和单位仍需在正式解释前核对附件8及论文。
+- 问题一最终模型没有把模型文件保存进冻结快照；问题二必须按重建注册表重新拟合每个训练折，不能从冻结 OOF 反推模型内部解释。
+- 任何超过5分钟的全量重建、网络 bootstrap、30目标置换或 SHAP 计算，先由代理完成短时冒烟和命令校验，再交由用户运行。
