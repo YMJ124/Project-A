@@ -328,6 +328,14 @@ def run_preflight(project_root: Path, config_path: Path) -> Dict[str, Any]:
     q2_summary = json.loads(interface_paths["q2_summary"].read_text(encoding="utf-8"))
     q2_candidates = pd.read_csv(interface_paths["q2_candidate_catalog"])
     q2_decisions = pd.read_csv(interface_paths["q2_target_decisions"])
+    q2_handoff = json.loads(
+        interface_paths["q2_handoff_summary"].read_text(encoding="utf-8")
+    )
+    q2_actionability = pd.read_csv(interface_paths["q2_actionability_registry"])
+    defect_selection = pd.read_csv(interface_paths["defect_sensory_selection"])
+    defect_gate = json.loads(
+        interface_paths["defect_sensory_stage_gate"].read_text(encoding="utf-8")
+    )
     if len(q1_registry) != 30 or q1_registry["target"].nunique() != 30:
         raise ValueError("Q1 source registry does not cover 30 unique targets")
     if len(q1_folds) != 250 * 7 or q1_folds[["beer", "repeat"]].duplicated().any():
@@ -340,17 +348,85 @@ def run_preflight(project_root: Path, config_path: Path) -> Dict[str, Any]:
         raise ValueError("Q2 upstream status is not READY")
     if len(q2_decisions) != 30 or q2_decisions["target"].nunique() != 30:
         raise ValueError("Q2 target decisions do not cover 30 unique targets")
+    if q2_handoff.get("status") != "PASS" or q2_handoff.get("partition_count") != 21:
+        raise ValueError("Q2 handoff is absent or does not cover 7 repeats x 3 folds")
+    if len(q2_actionability) != 231 or q2_actionability["feature"].nunique() != 231:
+        raise ValueError("Q2 actionability handoff does not cover 231 unique features")
+    causal_flags = (
+        q2_actionability["causal_actionability_claimed"]
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .isin({"true", "1", "yes"})
+    )
+    if causal_flags.any():
+        raise ValueError("Q2 handoff unexpectedly claims causal actionability")
+    expected_defects = {"dms", "diacetyl", "X4vg", "t2n", "stale_hops"}
+    if set(defect_selection["target"]) != expected_defects:
+        raise ValueError("Defect sensory evidence does not cover the five locked targets")
+    if defect_gate.get("n_targets") != 5:
+        raise ValueError("Defect sensory stage gate has an invalid target count")
+    if len(q2_candidates) != q2_handoff.get("q2_candidate_count"):
+        raise ValueError("Frozen Q2 catalog and Q3 handoff candidate counts differ")
     unknown_candidates = sorted(set(q2_candidates["representative_feature"]).difference(data.feature_names))
     if unknown_candidates:
         raise ValueError(f"Q2 candidates absent from the chemical schema: {unknown_candidates}")
 
     defect_targets = [item["sensory_target"] for item in config["defects"]]
     defects = _defect_registry(config, features, calibrated, thresholds, data.target_names)
+    defect_evidence = defect_selection[
+        ["target", "grade", "r2_mean", "spearman_mean", "rmse_improvement_vs_global"]
+    ].rename(
+        columns={
+            "target": "sensory_target",
+            "grade": "sensory_oof_grade",
+            "r2_mean": "sensory_oof_r2",
+            "spearman_mean": "sensory_oof_spearman",
+            "rmse_improvement_vs_global": "sensory_oof_improvement_vs_global",
+        }
+    )
+    defects = defects.merge(defect_evidence, on="sensory_target", how="left", validate="one_to_one")
+    if defects["sensory_oof_grade"].isna().any():
+        raise ValueError("A defect constraint is missing repeated OOF sensory evidence")
+    defects["validated_sensory_predictor"] = defects["sensory_oof_grade"].isin(["A", "B"])
     feature_schema = _feature_schema(data.X, protocol["quantiles"])
     feature_schema["q2_candidate_representative"] = feature_schema["feature"].isin(
         q2_candidates["representative_feature"]
     )
     sensory_schema = _sensory_schema(data.target_names, data.main_target_names, defect_targets)
+    sensory_schema = sensory_schema.merge(
+        defect_evidence[["sensory_target", "sensory_oof_grade"]].rename(
+            columns={"sensory_target": "target"}
+        ),
+        on="target",
+        how="left",
+        validate="one_to_one",
+    )
+
+    deployment_paths = {
+        key: _path(project_root, config, "deployment", key)
+        for key in config.get("deployment", {})
+    }
+    predictor_manifest_path = deployment_paths.get("q1_full_predictor_manifest")
+    predictor_model_path = deployment_paths.get("q1_full_predictor_model")
+    q1_predictor_available = bool(
+        predictor_manifest_path
+        and predictor_model_path
+        and predictor_manifest_path.is_file()
+        and predictor_model_path.is_file()
+    )
+    predictor_manifest: Dict[str, Any] = {}
+    if q1_predictor_available:
+        predictor_manifest = json.loads(
+            predictor_manifest_path.read_text(encoding="utf-8")
+        )
+        q1_predictor_available = bool(
+            predictor_manifest.get("status") == "PASS"
+            and predictor_manifest.get("n_features") == 231
+            and predictor_manifest.get("n_targets") == 30
+            and predictor_manifest.get("model_sha256")
+            == sha256_file(predictor_model_path)
+        )
 
     output = _path(project_root, config, "runtime", "output_root")
     output.mkdir(parents=True, exist_ok=True)
@@ -366,15 +442,23 @@ def run_preflight(project_root: Path, config_path: Path) -> Dict[str, Any]:
         "chemical_network_csv": network_path,
         "metadata_xlsx": metadata_path,
         **interface_paths,
+        **{
+            key: path for key, path in deployment_paths.items() if path.is_file()
+        },
     }
     manifest = {key: {"path": str(path), "sha256": sha256_file(path)} for key, path in input_paths.items() if path.is_file()}
     (output / "input_manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    open_interfaces = [
-        "q1_full_data_champion_predictor",
-        "validated_stale_hops_appendix_predictor",
-    ]
+    open_interfaces = []
+    if not q1_predictor_available:
+        open_interfaces.append("q1_full_data_champion_predictor")
+    if not bool(
+        defects.loc[
+            defects["sensory_target"] == "stale_hops", "validated_sensory_predictor"
+        ].iloc[0]
+    ):
+        open_interfaces.append("validated_stale_hops_appendix_predictor")
     summary = {
         "status": "PASS_WITH_OPEN_INTERFACES",
         **observed,
@@ -388,20 +472,31 @@ def run_preflight(project_root: Path, config_path: Path) -> Dict[str, Any]:
         "q1_main_target_grades": {
             str(key): int(value) for key, value in q1_registry["grade"].value_counts().items()
         },
-        "q1_full_data_predictor_available": False,
+        "q1_full_data_predictor_available": q1_predictor_available,
+        "q1_full_data_predictor_scope": predictor_manifest.get("scope"),
         "validation_repeats": int(q1_folds["repeat"].nunique()),
         "validation_folds_per_repeat": int(q1_folds["fold"].nunique()),
         "q2_status": q2_summary["formal_question2_status"],
         "q2_candidate_count": int(len(q2_candidates)),
         "q2_complete_top3_targets": int((q2_decisions["final_candidate_count"] >= 3).sum()),
+        "q2_handoff_status": q2_handoff["status"],
+        "q2_consensus_edge_count": int(q2_handoff["consensus_edge_count"]),
+        "q2_consensus_module_count": int(q2_handoff["consensus_module_count"]),
         "defect_chemical_constraints_ready": int(defects["constraint_ready"].sum()),
+        "defect_sensory_grade_counts": {
+            str(key): int(value)
+            for key, value in defect_selection["grade"].value_counts().items()
+        },
+        "validated_defect_sensory_predictors": int(
+            defects["validated_sensory_predictor"].sum()
+        ),
         "defect_total": int(len(defects)),
         "open_interfaces": open_interfaces,
         "safe_next_steps": [
             "fit_and_evaluate_nonparametric_conditional_generation_baseline",
             "implement_evaluation_on_locked_q1_validation_splits",
-            "build_q1_full_data_prediction_adapter_without_changing_frozen_sources",
-            "train_appendix_defect_predictors_with_oof_evaluation",
+            "use_q2_consensus_modules_for_structured_regularization_and_candidate_audit",
+            "report_stale_hops_as_exploratory_only",
         ],
         "no_model_training": True,
         "no_generator_selection": True,

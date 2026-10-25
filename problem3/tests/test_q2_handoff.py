@@ -1,6 +1,34 @@
 from pathlib import Path
 
 import pandas as pd
+import yaml
+
+from beer_q3.q2_handoff import build_q2_handoff, write_readme
+
+
+def test_q2_handoff_rebuilds_from_all_locked_partitions(tmp_path):
+    project_root = Path(__file__).resolve().parents[2]
+    source = project_root / "problem3/configs/q2_handoff_v1.yaml"
+    config = yaml.safe_load(source.read_text(encoding="utf-8"))
+    output = tmp_path / "q2_handoff"
+    config["runtime"]["output_root"] = str(output)
+    temporary_config = tmp_path / "config.yaml"
+    temporary_config.write_text(
+        yaml.safe_dump(config, sort_keys=False, allow_unicode=True), encoding="utf-8"
+    )
+    summary = build_q2_handoff(project_root, temporary_config)
+    write_readme(output, summary)
+    assert summary["partition_count"] == 21
+    assert summary["consensus_edge_count"] == 710
+    assert summary["consensus_module_count"] == 60
+    assert summary["q2_targets_without_candidates"] == [
+        "A_hops_citrus",
+        "A_hops_tropical",
+        "A_malt_bread",
+        "F_hops_citrus",
+        "F_malt_grain",
+    ]
+    assert (output / "SHA256SUMS").is_file()
 
 
 def test_q2_handoff_has_locked_coverage_and_safe_roles():

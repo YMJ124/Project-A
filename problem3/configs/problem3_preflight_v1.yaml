@@ -12,9 +12,19 @@ interfaces:
   q1_source_registry: "problem1/freezes/problem1_v1/source_registry.csv"
   q1_stage_gate: "problem1/freezes/problem1_v1/champion_artifacts/all_stage_gate.json"
   q1_folds: "problem1/freezes/problem1_v1/base_run_metadata/folds.csv"
-  q2_summary: "problem2/artifacts/q2_current_evaluation_v8/summary.json"
-  q2_candidate_catalog: "problem2/artifacts/q2_formal_candidate_bundle_v2/candidate_catalog.csv"
-  q2_target_decisions: "problem2/artifacts/q2_formal_candidate_bundle_v2/target_decisions.csv"
+  q2_summary: "problem2/freezes/problem2_v1/evaluation/summary.json"
+  q2_candidate_catalog: "problem2/freezes/problem2_v1/candidates/candidate_catalog.csv"
+  q2_target_decisions: "problem2/freezes/problem2_v1/candidates/target_decisions.csv"
+  q2_handoff_summary: "problem3/interfaces/q2_handoff_v1/summary.json"
+  q2_actionability_registry: "problem3/interfaces/q2_handoff_v1/actionability_registry.csv"
+  defect_sensory_selection: "problem3/interfaces/defect_sensory_oof_v1/model_selection.csv"
+  defect_sensory_stage_gate: "problem3/interfaces/defect_sensory_oof_v1/stage_gate.json"
+
+deployment:
+  # Regenerable local binary; the adapter/config are versioned, but the fitted
+  # joblib is deliberately not committed as validation evidence.
+  q1_full_predictor_manifest: "problem3/artifacts/interfaces/q1_full_predictor_v1/manifest.json"
+  q1_full_predictor_model: "problem3/artifacts/interfaces/q1_full_predictor_v1/q1_full_predictor.joblib"
 
 styles:
   generation_targets: [Tripel, Kriek, Lambic]
