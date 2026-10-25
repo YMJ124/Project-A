@@ -1,0 +1,3 @@
+primary_run: "problem2/artifacts/q2_formal_candidate_final_v1"
+module_rescue_run: "problem2/artifacts/q2_module_first_rescue_v2"
+output_root: "problem2/artifacts/q2_formal_candidate_bundle_v2"

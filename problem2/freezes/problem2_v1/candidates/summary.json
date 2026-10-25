@@ -1,0 +1,21 @@
+{
+  "status": "READY_WITH_LIMITATIONS",
+  "targets": 30,
+  "reported_candidates": 46,
+  "primary_candidates": 42,
+  "secondary_module_candidates": 4,
+  "targets_with_three_candidates": 7,
+  "targets_with_one_or_two_candidates": 18,
+  "targets_with_insufficient_evidence": 5,
+  "targets_still_insufficient": [
+    "A_hops_citrus",
+    "A_hops_tropical",
+    "A_malt_bread",
+    "F_hops_citrus",
+    "F_malt_grain"
+  ],
+  "forced_top3_count": 0,
+  "question1_status": "HOLD",
+  "causal_claims_allowed": false,
+  "same_source_audit_is_external_validation": false
+}

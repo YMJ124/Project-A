@@ -1,0 +1,21 @@
+gate,criterion,required_for_formal_v1,observed,status,blocking,evidence
+G0_data,Frozen input identity,1.csv and 4.csv hashes match Q1 freeze,True,PASS,True,data_audit.json
+G0_data,Attachment 2 method match,pairwise Spearman max difference <=1e-12,6.66e-16,PASS,True,attachment2_network_check.json
+G1_q1,True champion reconstruction,all analyzed target-folds <=1e-9,630/630 formal target-folds; max=0,PASS,True,q2_formal_all7_fast_v1/reconstruction_audit.csv
+G1_q1,Target coverage,30/30 main targets,formal-depth 30/30,PASS,True,q2_formal_all7_fast_v1/data_audit.json
+G2_network,Threshold/FDR sensitivity,rho 0.30/0.40/0.50 and FDR<=0.05,"[0.3, 0.4, 0.5]",PASS,True,network_threshold_sensitivity.csv
+G2_network,Bootstrap depth,200 style-stratified resamples per fold,20 in the complete repeat-0 explanation chain; 200 in 7/7 network repeats,PASS,True,q2_network_repeat6_v1/summary.json
+G2_network,Primary edge-set stability,median fold Jaccard >=0.60 and edge-count CV<=0.15,Jaccard=0.621; CV=0.071,PASS,False,network_stability_summary.csv
+G2_network,Community stability,median fold ARI >=0.50,stable-edge ARI >=0.50 in 7/7 audited repeats; median=0.567; filtering improvement passed 5/7,PASS,False,q2_network_repeat4_v1/summary.json
+G2_network,Fold/repeat coverage,7 frozen repeats x 3 folds,formal feature explanation 7 x 3,PASS,True,q2_formal_all7_fast_v1/data_audit.json
+G3_explain,Held-out primary explanation,within-style permutation on outer validation only,implemented,PASS,True,oof_permutation_importance.parquet
+G3_explain,Permutation depth,100 permutations per feature/fold,within-style=100; unconditional=100,PASS,True,q2_formal_all7_fast_v1/config.resolved.yaml
+G3_explain,Permutation-mode sensitivity,median conditional/unconditional Top-10 Jaccard >=0.50,formal 30-target median Top-10 Jaccard=0.603,PASS,False,q2_formal_all7_fast_v1/importance_stability.csv
+G4_methods,TreeSHAP agreement,report permutation-vs-SHAP Top-10 Jaccard,formal 30-target Top-10 Jaccard=0.333; max additivity error=6.66e-15,PASS,False,q2_formal_all7_advanced_fast_v1/permutation_shap_agreement.csv
+G4_methods,Correlated-group importance,community/group joint permutation,"formal 30-target, 7x3-fold joint community permutation; 570600 raw rows",PASS,False,q2_formal_all7_advanced_fast_v1/oof_group_permutation_importance.parquet
+G4_methods,Style direction heterogeneity,styles with n>=8 checked for reversals,formal candidate-style reversal rate=0.020,PASS,False,q2_formal_all7_advanced_fast_v1/style_direction_heterogeneity.csv
+G5_candidates,Predeclared candidate stability,"Top10>=60%, positive>=80%, direction>=70%",67 candidates pass all three gates across 21 folds; 24/30 targets represented,PASS,True,q2_formal_all7_fast_v1/importance_stability.csv
+G5_candidates,Network de-redundancy,community alternatives and stable representative,"v2 catalog reports 46 candidates: 7 targets with three, 18 with one/two, 5 insufficient; no forced Top-3",PASS,True,q2_formal_candidate_bundle_v2/candidate_catalog.csv
+G5_candidates,Attachment 6/8 consistency,agreements and conflicts reported without selection leakage,formal set audited: attachment 6 mapped 46 candidates; attachment 8 metadata mapped 59; target-untraceable importance excluded,PASS,True,q2_formal_candidate_final_v1/source_consistency.csv
+G5_candidates,C-grade restraint,no forced formal Top-3,forced Top-3 count=0; secondary module evidence preserves Q1 grade ceilings,PASS,True,q2_formal_candidate_bundle_v2/target_decisions.csv
+G6_repro,Auditable artifacts,"config, folds, hashes, versions, raw importance retained",present,PASS,True,run directory
