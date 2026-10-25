@@ -1,0 +1,25 @@
+# Secondary module-first evidence for the eight formally insufficient targets.
+base_run: "problem2/artifacts/q2_formal_all7_fast_v1"
+advanced_run: "problem2/artifacts/q2_formal_all7_advanced_fast_v1"
+formal_candidate_run: "problem2/artifacts/q2_formal_candidate_final_v1"
+output_root: "problem2/artifacts/q2_module_first_rescue_v2"
+targets:
+  - A_esters_ethac
+  - A_hops_citrus
+  - A_hops_tropical
+  - A_hops_woody
+  - A_malt_bread
+  - F_hops_citrus
+  - F_malt_bread
+  - F_malt_grain
+network_nodes_paths:
+  - "problem2/artifacts/q2_network_repeat0_full_v1/network_nodes_confirmation.csv"
+  - "problem2/artifacts/q2_network_stability_confirmation_v1/network_nodes_confirmation.csv"
+  - "problem2/artifacts/q2_network_repeat2_v1/network_nodes_confirmation.csv"
+  - "problem2/artifacts/q2_network_repeat3_v1/network_nodes_confirmation.csv"
+  - "problem2/artifacts/q2_network_repeat4_v1/network_nodes_confirmation.csv"
+  - "problem2/artifacts/q2_network_repeat5_v1/network_nodes_confirmation.csv"
+  - "problem2/artifacts/q2_network_repeat6_v1/network_nodes_confirmation.csv"
+network_variant: stable_filtered
+co_community_minimum: 0.6666666666666666
+maximum_candidates_per_target: 3

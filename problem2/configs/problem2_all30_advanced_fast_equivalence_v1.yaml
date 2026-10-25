@@ -1,0 +1,26 @@
+# Exact old/new equivalence check: same fold, seed, network and one community
+# permutation as q2_all30_fast_advanced_smoke_v1.
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+  target_scope: main
+base_run: "problem2/artifacts/q2_all30_fast_smoke_v1"
+network_nodes_paths:
+  - "problem2/artifacts/q2_network_repeat4_v1/network_nodes_confirmation.csv"
+network_variant: stable_filtered
+output_root: "problem2/artifacts/q2_all30_advanced_fast_equivalence_v1"
+targets: all_main
+repeats: [4]
+outer_folds: [0]
+group_permutations: 1
+group_permutation_seed: 20436024
+style_minimum_group_n: 3
+style_report_minimum_n: 8
+direction_reversal_min_abs_global_rho: 0.10
+direction_reversal_min_abs_style_rho: 0.20
+top_k: 5
+reconstruction_tolerance: 1.0e-9
+n_jobs: 1

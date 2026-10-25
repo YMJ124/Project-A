@@ -1,0 +1,16 @@
+# Compatibility smoke for the optimized fold-level permutation summary.
+base_run: "problem2/artifacts/q2_all30_fast_smoke_v1"
+network_nodes_path: "problem2/artifacts/q2_network_repeat4_v1/network_nodes_confirmation.csv"
+network_variant: stable_filtered
+output_root: "problem2/artifacts/q2_all30_fast_advanced_smoke_v1"
+targets: all_main
+repeats: [4]
+outer_folds: [0]
+group_permutations: 1
+group_permutation_seed: 20436024
+style_minimum_group_n: 3
+style_report_minimum_n: 8
+direction_reversal_min_abs_global_rho: 0.10
+direction_reversal_min_abs_style_rho: 0.20
+top_k: 5
+reconstruction_tolerance: 1.0e-9

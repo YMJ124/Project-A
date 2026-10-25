@@ -1,0 +1,16 @@
+# Frozen repeat-6 robustness audit of the already locked stable-edge mechanism.
+output_root: "problem2/artifacts/q2_network_repeat6_v1"
+repeat: 6
+outer_folds: [0, 1, 2]
+abs_rho_threshold: 0.40
+fdr_alpha: 0.05
+bootstrap_repeats: 200
+bootstrap_seed: 20439024
+community_method: leiden
+stable_edge_frequency_minimum: 0.90
+stable_edge_sign_consistency_minimum: 0.90
+adoption:
+  median_ari_minimum: 0.50
+  median_ari_improvement_minimum: 0.03
+  median_edge_jaccard_minimum: 0.60
+  edge_retention_minimum: 0.40

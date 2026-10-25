@@ -1,0 +1,45 @@
+# First resumable formal explanation chunk. Network bootstrap here is only an
+# engineering companion; the formal 200-bootstrap network for repeat 0 is in
+# q2_network_repeat0_full_v1 and is consumed by the advanced configuration.
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  chemical_network_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/2.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+  target_scope: main
+frozen_q1:
+  freeze_dir: "problem1/freezes/problem1_v1"
+  source_registry: "problem1/freezes/problem1_v1/source_registry.csv"
+  oof_predictions: "problem1/freezes/problem1_v1/champion_artifacts/oof_predictions.parquet"
+  folds: "problem1/freezes/problem1_v1/base_run_metadata/folds.csv"
+  tuning_trials: "problem1/freezes/problem1_v1/base_run_metadata/tuning_trials.csv"
+experiment:
+  run_name: q2_formal_repeat0_v1
+  scope: formal_explanation_chunk_repeat0_not_top3
+  targets: all_main
+  repeats: [0]
+  outer_folds: [0, 1, 2]
+network:
+  abs_rho_thresholds: [0.30, 0.40, 0.50]
+  primary_abs_rho_threshold: 0.40
+  fdr_alpha: 0.05
+  bootstrap_repeats: 1
+  bootstrap_seed: 20440024
+  community_method: leiden
+explanation:
+  modes: [within_style, unconditional]
+  primary_mode: within_style
+  permutations: 100
+  permutation_seed: 20441024
+  style_minimum_group_n: 3
+  reconstruction_tolerance: 1.0e-9
+  top_k: [3, 10]
+stability:
+  top10_frequency_minimum: 0.60
+  positive_importance_frequency_minimum: 0.80
+  direction_consistency_minimum: 0.70
+runtime:
+  output_root: "problem2/artifacts/q2_formal_repeat0_v1"
+  n_jobs: 1

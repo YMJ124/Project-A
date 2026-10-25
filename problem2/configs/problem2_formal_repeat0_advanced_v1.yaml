@@ -1,0 +1,20 @@
+# Formal TreeSHAP and correlated-module explanation for repeat 0. The network
+# nodes come from the completed 200-bootstrap stable/unfiltered audit.
+base_run: "problem2/artifacts/q2_formal_all7_fast_v1"
+network_nodes_path: "problem2/artifacts/q2_network_repeat0_full_v1/network_nodes_confirmation.csv"
+network_variant: stable_filtered
+output_root: "problem2/artifacts/q2_formal_repeat0_advanced_v1"
+targets: all_main
+repeats: [0]
+outer_folds: [0, 1, 2]
+# The formal 100-repeat requirement applies to per-feature primary permutation.
+# Group permutation is a de-redundancy sensitivity analysis; 20 repeats are
+# locked before the formal run and reported separately.
+group_permutations: 20
+group_permutation_seed: 20442024
+style_minimum_group_n: 3
+style_report_minimum_n: 8
+direction_reversal_min_abs_global_rho: 0.10
+direction_reversal_min_abs_style_rho: 0.20
+top_k: 10
+reconstruction_tolerance: 1.0e-9

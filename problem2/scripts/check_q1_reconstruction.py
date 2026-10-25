@@ -17,14 +17,19 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repeats", default="0-6", help="inclusive repeat range, e.g. 0-0 or 0-6")
     parser.add_argument("--tolerance", type=float, default=1e-9)
-    parser.add_argument("--output", default="artifacts/problem2/q1_reconstruction_v1")
+    parser.add_argument("--output", default="problem2/artifacts/q1_reconstruction_v1")
     parser.add_argument("--targets", nargs="+", default=DEFAULT_TARGETS)
+    parser.add_argument(
+        "--all-targets",
+        action="store_true",
+        help="validate all 30 frozen main targets instead of --targets",
+    )
     args = parser.parse_args()
     start, end = (int(value) for value in args.repeats.split("-", maxsplit=1))
     root = PROJECT_ROOT
     result = reconstruct_and_compare(
         root,
-        targets=args.targets,
+        targets=None if args.all_targets else args.targets,
         repeats=range(start, end + 1),
         tolerance=args.tolerance,
         output_dir=root / args.output,

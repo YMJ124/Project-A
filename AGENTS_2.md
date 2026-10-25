@@ -180,7 +180,7 @@
 
 ## 9. 主要产物
 
-统一写入 `artifacts/problem2/<run_name>/`，至少包括：
+统一写入 `problem2/artifacts/<run_name>/`，至少包括：
 
 - `data_audit.json`：输入哈希、连接、缺失和维度审计。
 - `config.resolved.yaml`：完整阈值、随机种子、置换次数和方法配置。
@@ -253,8 +253,15 @@
 
 - 问题一冠军及其必要 OOF、指标、折、配置和来源映射已冻结在 `problem1/freezes/problem1_v1/`。
 - 问题二前置已完成：数据合同、字段字典、问题一逐目标重建配方、协议配置和短时审计测试已建立。
-- 正式网络 bootstrap、验证折置换重要性、TreeSHAP 和 Top-3 选择尚未开始；前置阶段不生成正式 Top-3。
-- 下一项实现任务是用冻结外层折重建 2--3 个示范目标的真实冠军模型，并验证重建预测与冻结 OOF 的数值一致性。
+- 首版 3 目标 pilot 已完成折内网络、样本外置换解释和分层评估；有效产物为 `problem2/artifacts/q2_pilot_v1_1/`。
+- TreeSHAP、社区联合置换、风格方向异质性、附件 6/8 pilot 审计和独立 repeat 网络优化确认已完成。
+- 正式 30 目标、7×3 完整证据链、每特征 100+100 次置换、TreeSHAP、
+  社区联合置换、风格检查、网络去冗余和附件 6/8 审计均已完成。
+- 当前问题二评估为 `READY`：20/20 项通过，16/16 条正式数值线通过，
+  11/16 条理想线通过。该状态不改变问题一的 `HOLD`。
+- 合并候选目录为 `q2_formal_candidate_bundle_v2`：46 个候选覆盖 25/30
+  目标；7 个目标有三个候选，18 个有一至两个，5 个明确证据不足；没有
+  强制补足 Top-3。
 
 ## 15. 问题二前置完成记录（2026-10-24）
 
@@ -297,8 +304,8 @@ python problem2/scripts/prepare_problem2_preflight.py --config problem2/configs/
 - 冻结问题一 OOF：52,500 行（250×7×30）；冻结折：1,750 行（250×7）。
 - 冻结来源注册表和问题二重建注册表均覆盖30个主目标，等级与来源一致。
 - 字段映射：210 个名称和顺序一致，18 个由预先声明的缩写/汇总别名确认，3 个为部分名称相似；没有未处理的顺序错位。
-- 输入哈希已记录在 `artifacts/problem2/preflight_v1/data_audit.json`，其中附件1和4哈希必须继续与问题一冻结记录一致。
-- 当前审计输出：`artifacts/problem2/preflight_v1/`，包含 `data_audit.json`、`field_dictionary.csv`、`q1_reconstruction_registry_resolved.csv` 和 `protocol.resolved.yaml`。该目录由 `.gitignore` 排除，正式精简结果另行提交。
+- 输入哈希已记录在 `problem2/artifacts/preflight_v1/data_audit.json`，其中附件1和4哈希必须继续与问题一冻结记录一致。
+- 当前审计输出：`problem2/artifacts/preflight_v1/`，包含 `data_audit.json`、`field_dictionary.csv`、`q1_reconstruction_registry_resolved.csv` 和 `protocol.resolved.yaml`。该目录由 `.gitignore` 排除，正式精简结果另行提交。
 
 ### 15.4 前置边界
 
@@ -328,10 +335,10 @@ python problem2/scripts/prepare_problem2_preflight.py --config problem2/configs/
 cd /home/yu/桌面/A
 conda activate /home/yu/桌面/A/.conda/envs/beer-q1
 export MPLCONFIGDIR=/tmp/beer_q2_mpl
-export PYTHONPATH=src
+export PYTHONPATH=problem1/src:problem2/src
 python problem2/scripts/check_q1_reconstruction.py \
   --repeats 0-6 \
-  --output artifacts/problem2/q1_reconstruction_v1
+  --output problem2/artifacts/q1_reconstruction_v1
 ```
 
 ### 16.3 结果
@@ -339,10 +346,172 @@ python problem2/scripts/check_q1_reconstruction.py \
 - 7 次重复 × 3 个外层折 × 3 个目标，共 63 个目标—折比较全部通过。
 - 三个目标的每个外层折最大绝对预测误差均为 `0.0`，均方根差异也为 `0.0`。
 - 仿射校准、固定融合和基础调参 ET 三种来源均已成功复原。
-- 结果文件：`artifacts/problem2/q1_reconstruction_v1/reconstruction_comparison.csv` 和 `reconstruction_summary.json`。
+- 结果文件：`problem2/artifacts/q1_reconstruction_v1/reconstruction_comparison.csv` 和 `reconstruction_summary.json`。
 
 首次短时检查曾失败，原因是重建读取器把调参轨迹中两个内层折的相同 `selected` 参数误判为多组参数，退回了错误的默认参数；修正为按 `params_json` 去重后重新运行，所有重复均通过。该问题属于接口读取错误，不是模型或数据不稳定，修正后未改变冻结冠军。
 
 ### 16.4 进入问题二框架的条件
 
-该一致性检查已通过，因此可以进入问题二解释框架搭建。下一步仍须遵守：先实现验证折置换的单目标短时示范和网络节点/社区数据结构，再扩展到全部30个目标；不得直接把此次重建结果当作化学重要性结论。
+该一致性检查已通过，因此可以进入问题二解释框架搭建。不得直接把此次重建结果当作化学重要性结论。
+
+## 17. 问题二首版 pilot 与评估体系（2026-10-24）
+
+### 17.1 实现与范围
+
+- 有效运行为 `problem2/artifacts/q2_pilot_v1_1/`，目标是 `A_hops_all`（A）、`F_esters_isoaa`（B）和 `A_hops_woody`（C），覆盖仿射校准 ET、50/50 融合和折内调参 ET 三类真实冠军流水线。
+- 使用冻结 repeat 0 的 3 个外层折；网络每折 20 次风格分层 bootstrap，解释每特征做 10 次风格内置换，无条件置换作敏感性。
+- 9/9 个目标—折预测与冻结 OOF 完全一致，最大绝对误差为 0。附件 2 与附件 1 成对完整 Spearman 重算的最大绝对差为 `6.66e-16`。
+- 第一次执行 `q2_pilot_v1` 错用“先整列秩化再成对 Pearson”，对 9 个含缺失字段的最大差为 0.0100；已保留并写入 `INVALIDATED.md`，不用于决策。
+
+### 17.2 实测结果
+
+- 主阈值 `|rho|=0.40, FDR<=0.05` 的边数为 1858/1620/1806；折间边集 Jaccard 中位数 0.621，边数 CV 0.071，边集层面初步稳定。
+- 社区 ARI 中位数只有 0.457，未达 pilot 后锁定的 0.50 确认目标，说明不能依赖单折社区标签去冗余。
+- 风格内与无条件置换 Top-10 Jaccard 中位数 0.667；方法敏感性初步可控，但尚缺 TreeSHAP 和社区联合置换。
+- 按预声明的 Top-10>=60%、正重要性>=80%、方向一致>=70% 计数，三目标分别有 6/5/1 个 pilot 候选；但因只有 3 折，这些数字不是正式 Top-3。
+
+### 17.3 评估决策
+
+- 工程 pilot 状态为 `PASS`；问题二正式状态为 `HOLD`。`evaluation_matrix.csv` 中 9 项 PASS、6 项 PARTIAL、5 项 NOT_RUN。
+- 正式阻断项为：30 目标覆盖、200 次网络 bootstrap、7x3 折覆盖、100 次置换、TreeSHAP、社区联合置换、风格方向异质性、网络去冗余及附件 6/8 一致性审计。
+- 完整评估体系位于 `problem2/docs/evaluation_framework_v1.md`；其中 pilot 后新增的网络/方法一致性门槛必须在新重复上确认，不得反过来用同一 pilot 自证。
+
+## 18. 首版扩展解释、差距评估与网络优化（2026-10-25）
+
+### 18.1 扩展解释
+
+- `q2_explain_pilot_v1` 完成真实冠军 TreeSHAP、社区联合置换和风格异质性；9/9 目标—折的 SHAP 加和验证通过，最大误差 `7.77e-16`。
+- 置换—SHAP Top-10 Jaccard 中位数为 0.333，通过 0.30 最低线，距 0.50 理想线 0.167。`A_hops_all`/`F_esters_isoaa`/`A_hops_woody` 分别为 0.429/0.333/0.250。
+- 总风格方向反转率为 6.09%，通过 10% 正式线，距 5% 理想线 1.09 个百分点。
+- 同时通过置换稳定性、SHAP、组联合置换和风格方向门的 pilot 候选数为 3/3/0（A/B/C 代表目标）。
+
+### 18.2 已采用网络优化
+
+- 只用 bootstrap 频率>=0.90 且符号一致率>=0.90 的主阈值边做社区发现，保留完整 FDR 边表。该机制在 repeat 0 提出，在未见 repeat 1 上用 200 bootstrap/折确认。
+- 同折基线 ARI=0.5504，稳定边 ARI=0.6473，提高 0.0970；稳定边 Jaccard=0.6152，中位边保留率=50.14%。四项预声明采用条件全部通过，正式决策为 `ADOPT`。
+
+### 18.3 附件审计与去冗余
+
+- 6/6 个完整 pilot 候选均映射到附件 6 和附件 8 元数据；附件 6 方向 6/6 一致，重算最大误差 `3.89e-16`。它们只能称为同源一致性。
+- 附件 8 的 GBM MDI 和 SHAP sheet 没有可追溯的感官目标标识，不进入排名或确认证据。阈值比较在单位/变换尚未人工核验前禁用。
+- 稳定社区显示 6 个候选只有 4 个模块；`ethyl_octanoate`/`ethanol..v.v.` 以及 `kcalperc`/`isopentyl_acetate` 分别是同模块替代物。
+
+### 18.4 当前评估
+
+- `q2_current_evaluation_v2` 为 13 PASS、7 PARTIAL；数值型正式线通过 8/11，理想线通过 2/11。
+- 硬缺口为：主目标 3/30、完整重复 1/7、特征置换 10/100。稳定社区 ARI 距理想线 0.0527，稳定边 Jaccard 差 0.0848，置换—SHAP Jaccard 差 0.1667。
+- 正式状态仍为 `HOLD`；不生成或冒充正式 Top-3。
+
+## 19. 模块级方法一致性优化（2026-10-25）
+
+- 第一个候选机制为稳定社区汇总绝对 SHAP 与社区联合置换的 Top-10 一致性。在未见 repeat 2 上，Jaccard 由 0.333 升至 0.429，6/9 折改善，但未达绝对 0.50 和改善 0.10 的锁定线，严格 `REJECT`。
+- 失败原因是每折约 47 个稳定模块时 Top-10 候选池过宽。新版本保留 G4 Top-10 报告不变，仅将模块 Top-5 作为最终 Top-3 前的候选池。
+- Top-5 机制在未见 repeat 3 上完整通过：单体 Jaccard=0.250，模块 Jaccard=0.667，中位改善=0.238，8/9 折改善，A/B 目标最低中位模块 Jaccard=0.429。决策 `ADOPT`。
+- 稳定边社区机制在 repeat 2 和 repeat 3 也再次通过原定采用条件：ARI 分别从 0.404/0.527 提高到 0.552/0.642。
+- 当前完整解释证据覆盖 repeats 0/2/3，但仍只有 3 个目标和每特征 10 次置换。`q2_current_evaluation_v3` 为正式数值线 10/13、理想线 4/13，正式状态仍为 `HOLD`。
+
+## 20. 全冠军来源覆盖、全目标工程验证与网络异质性（2026-10-25）
+
+- 已把 `source_registry.csv` 中 30 个主目标的冻结来源落实为可执行映射，
+  覆盖折内调参多输出 ET、逐目标 ET、GBR、SelectK-30/60/120 ET、
+  仿射校准、固定 1.25 倍率和 50/50 融合。
+- `q1_reconstruction_all30_repeat4_v1` 在 repeat 4 完成 30×3=90 个
+  目标—折重建，90/90 与冻结 OOF 完全一致，最大绝对误差 0。
+- `q1_source_shap_audit_v1` 对九种来源架构逐一审计，9/9 重建和 SHAP
+  加和均通过，最大加和误差 `1.67e-15`；SelectK 未入选特征的 SHAP
+  显式回填为零。
+- `q2_all30_smoke_v1` 和 `q2_all30_advanced_smoke_v1` 已用 repeat 4、
+  fold 0 打通 30 目标的置换、TreeSHAP、相关组联合置换和风格检查。
+  该运行只属于工程 smoke，不得算作 30 目标正式覆盖或生成 Top-3。
+- 稳定边筛选在 repeats 1/2/3 通过预声明的相对 ARI 改善线，但 repeat 4
+  未通过：ARI 由 0.5432 变为 0.5365，差 `-0.0067`；绝对 ARI、边
+  Jaccard=0.6232 和保留率=0.5059 仍通过。最终网络解释必须保留未筛边
+  敏感性，不得声称稳定边筛选在所有重复都改善社区一致性。
+- `q2_current_evaluation_v4` 为 13 PASS、7 PARTIAL；数值型正式线
+  12/16、理想线 6/16。正式深度仍只有 3/30 目标、3/7 个完整解释重复、
+  每特征 10/100 次置换，因此状态继续为 `HOLD`。
+- 后续补齐 repeats 0/5/6 的 200-bootstrap 网络审计后，网络深度达到
+  7/7。稳定边筛选的相对 ARI 改善在全部重复中通过 5/7，在独立
+  repeats 1--6 中通过 4/6；失败重复为 4/5，但七个重复绝对 ARI 均
+  >=0.50。`q2_current_evaluation_v5` 更新为 14 PASS、6 PARTIAL，数值型
+  正式线 13/16、理想线 7/16；正式状态仍为 `HOLD`。
+
+## 21. 正式长跑加速与断点续跑（2026-10-25）
+
+- RTX 5070 8GB 在沙箱外可见，但冻结冠军为 sklearn Extra Trees/GBR，
+  `beer-q1` 环境无 cuML/CuPy/Treelite。禁止用GPU模型替换冠军后
+  声称解释原冠军。
+- 同一冻结ET的CPU微基准中，`n_jobs=-1` 拟合/预测均慢于
+  `n_jobs=1`，且有 `1.11e-16` 浮点求和顺序差；正式配置因此保留
+  `n_jobs=1`。
+- 新运行器 `formal_fast.py` 对共享多输出模型每批只预测一次，
+  向量化 RMSE/R2/Spearman，每折流式写 Parquet，并以折文件作原子
+  完成标记；重启会自动跳过已完成折。
+- 新旧一折30目标结果13860行逐行对齐，RMSE/R2等完全一致，
+  Spearman最大差 `2.22e-16`；SHAP和组置换逐行最大差为0。
+- 30目标一折1/1次置换由约121秒降至57秒；10/2次基准为
+  73秒、峰值内存约241MB。正式主置换和无条件敏感性
+  置换均恢复为100次，与未加速方案保持相同统计深度。
+- 30目标一折完整100/20深度实测用170.67秒，折内计算
+  153.09秒，峰值内存约299MB，生成831,600行且重建误差为0。
+  这是恢复100/100前的性能标定，不是当前正式配置。
+- 推荐长跑配置为 `problem2_formal_all7_fast_v1.yaml`，一次覆盖
+  30目标、7重复、21个冻结折；100/100深度按实测斜率估计
+  约79--86分钟，建议预留1.5--2小时，
+  显著低于2--3小时目标。
+
+## 22. 30目标七重复正式置换结果（2026-10-25）
+
+- `q2_formal_all7_fast_v1` 已完成30目标、7重复、3折、231特征、
+  风格内/无条件各100次置换；29,106,000/29,106,000行完整。
+- 630/630个目标—折与冻结OOF重建一致，最大绝对误差为0。
+  21折记录计算时间合计78.11分钟，输出约1.4GiB。
+- 按Top-10频率>=60%、正置换频率>=80%、方向一致>=70%的
+  预声明规则，共67个单特征—目标候选通过，覆盖24/30目标。
+  A/B/C级分别为44/19/4个，覆盖12/13、8/11、4/6个目标。
+- 无单特征通过的6个目标为`F_malt_bread`、`A_esters_ethac`、
+  `A_hops_citrus`、`F_hops_citrus`、`A_hops_woody`和`F_malt_grain`。
+  前个A/B目标必须报告证据不足或等社区级高级证据，不强行给Top-3。
+- 风格内/无条件Top-10 Jaccard中位数为0.603，通过0.50正式线，
+  未达0.70理想线；20/30目标单独通过0.50。
+- 原计算硬缺口（30目标、7重复、100次置换）均已关闭。当前
+  剩余工作是将全目标TreeSHAP、社区联合置换、风格方向检查、
+  稳定社区Top-5去冗余和附件6/8审计并入候选。未完成前仍为`HOLD`。
+
+## 23. 全量高级解释加速和检查点（2026-10-25）
+
+- `formal_advanced_fast.py` 将原始SHAP、社区联合置换、折级SHAP
+  摘要和重建审计分成4类逐折Parquet；4类文件都存在才认为该折完成。
+- 共享多输出树的TreeSHAP只计算一次，再按目标提取；社区置换也
+  一次预测所有30目标，不改变冻结模型、社区、随机种子或指标。
+- 新旧单折对照中，575,190行SHAP值完全一致；1,290行同种子
+  社区置换的RMSE/R2等完全一致，Spearman最大差`2.22e-16`；
+  方法Top-5 Jaccard和风格方向表完全一致。
+- 30目标单折正式20次社区置换实测核心时间14.46秒，
+  峰值内存约540MB；生成575,190行SHAP和25,800行社区置换。
+  21折预计7--12分钟，建议预留15分钟。
+- 正式配置为`problem2_formal_all7_advanced_fast_v1.yaml`，预期SHAP
+  12,127,500行、社区置换570,600行、630个目标—折审计。
+
+## 24. 正式高级解释、候选去冗余与模块补充（2026-10-25）
+
+- `q2_formal_all7_advanced_fast_v1` 完成 21/21 折；SHAP、社区置换和
+  审计实际行数均与预期一致。最大 SHAP 加和误差 `6.66e-15`，冻结预测
+  重建误差为 0。
+- 单特征置换—SHAP Top-10 Jaccard 中位数为 0.333；按稳定社区汇总后，
+  正式 Top-3 Jaccard 中位数由 0.200 提升到 0.500。风格方向总反转率
+  为 1.95%，同时通过正式和理想线。
+- 原 67 个置换稳定候选中，59 个同时通过 SHAP、社区联合置换和风格门，
+  覆盖 22/30 目标；网络去冗余后为 45 个模块，主目录报告 42 个代表。
+- 附件 6 映射 46/59 个完整候选且方向 46/46 一致；附件 8 元数据覆盖
+  59/59。附件重要性不参与排名，同源附件不称为外部验证。
+- 对主目录零候选的 8 个目标，模块优先留一重复机制要求至少 5/7 次
+  “六重复选择+留出重复通过”。该机制为 `A_esters_ethac`、
+  `A_hops_woody` 和 `F_malt_bread` 补充 4 个次级模块候选，不替换主证据。
+- 最终 `q2_formal_candidate_bundle_v2` 为 `READY_WITH_LIMITATIONS`：46 个
+  候选，7/18/5 个目标分别有三个/一至两个/零个候选。仍不足的目标是
+  `A_hops_citrus`、`A_hops_tropical`、`A_malt_bread`、
+  `F_hops_citrus`、`F_malt_grain`。
+- 当前评估 `q2_current_evaluation_v8` 为 20 PASS、0 阻断项；正式数值线
+  16/16，理想线 11/16。详细分析见
+  `problem2/docs/problem2_formal_advanced_analysis_v2.md`。

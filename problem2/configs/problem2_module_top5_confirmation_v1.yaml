@@ -1,0 +1,14 @@
+# Locked after repeat-2 Top-10 rejection and before inspecting repeat 3.
+mechanism: stable_community_top5_candidate_pool
+discovery_repeat: 2
+confirmation_repeat: 3
+top_k: 5
+scope:
+  - report Top-10 unchanged for G4 comparability
+  - use module Top-5 only as the pre-Top-3 candidate pool
+  - do not promote C-grade conclusions
+adoption:
+  median_module_jaccard_minimum: 0.50
+  median_improvement_minimum: 0.10
+  improved_target_folds_minimum: 6
+  ab_target_median_minimum: 0.40

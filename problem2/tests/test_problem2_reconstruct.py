@@ -1,6 +1,17 @@
 from pathlib import Path
 
-from beer_q2.reconstruct import reconstruct_and_compare
+import pandas as pd
+
+from beer_q2.reconstruct import FROZEN_SOURCE_BY_TARGET, reconstruct_and_compare
+
+
+def test_executable_source_map_matches_frozen_registry():
+    project_root = Path(__file__).resolve().parents[2]
+    registry = pd.read_csv(
+        project_root / "problem1/freezes/problem1_v1/source_registry.csv"
+    )
+    observed = dict(zip(registry["target"], registry["source_model"]))
+    assert FROZEN_SOURCE_BY_TARGET == observed
 
 
 def test_representative_q1_reconstruction_one_repeat(tmp_path):

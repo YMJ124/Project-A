@@ -27,4 +27,4 @@ protocol:
   direction_consistency_minimum: 0.70
   style_minimum_n_for_group_report: 8
 runtime:
-  output_root: "artifacts/problem2/preflight_v1"
+  output_root: "problem2/artifacts/preflight_v1"
