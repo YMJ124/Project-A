@@ -1,0 +1,58 @@
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  chemical_network_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/2.csv"
+  metadata_xlsx: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/8.xlsx"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+
+interfaces:
+  q1_freeze_dir: "problem1/freezes/problem1_v1"
+  q1_source_registry: "problem1/freezes/problem1_v1/source_registry.csv"
+  q1_stage_gate: "problem1/freezes/problem1_v1/champion_artifacts/all_stage_gate.json"
+  q1_folds: "problem1/freezes/problem1_v1/base_run_metadata/folds.csv"
+  q2_summary: "problem2/artifacts/q2_current_evaluation_v8/summary.json"
+  q2_candidate_catalog: "problem2/artifacts/q2_formal_candidate_bundle_v2/candidate_catalog.csv"
+  q2_target_decisions: "problem2/artifacts/q2_formal_candidate_bundle_v2/target_decisions.csv"
+
+styles:
+  generation_targets: [Tripel, Kriek, Lambic]
+  transfer_source: Pils/Lager
+  transfer_target: Tripel
+  minimum_required_samples: 10
+
+defects:
+  - name: DMS
+    chemical_field: DMS
+    sensory_target: dms
+    threshold_policy: conservative_minimum
+  - name: Diacetyl
+    chemical_field: X2.3.butanedione
+    sensory_target: diacetyl
+    threshold_policy: conservative_minimum
+  - name: 4VG
+    chemical_field: X4VG
+    sensory_target: X4vg
+    threshold_policy: conservative_minimum_with_style_audit
+  - name: trans-2-nonenal
+    chemical_field: X.E..2.nonenal
+    sensory_target: t2n
+    threshold_policy: relative_nonincrease
+  - name: Stale hops
+    chemical_field: null
+    sensory_target: stale_hops
+    threshold_policy: predicted_relative_nonincrease
+
+protocol:
+  expected_samples: 250
+  expected_features: 231
+  expected_styles: 22
+  expected_main_targets: 30
+  expected_all_targets: 50
+  transform_match_atol: 1.0e-8
+  transform_match_minimum: 0.95
+  quantiles: [0.01, 0.05, 0.50, 0.95, 0.99]
+
+runtime:
+  output_root: "problem3/artifacts/preflight_v1"
