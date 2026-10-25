@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "network_variant": "stable_filtered",
+  "partition_count": 21,
+  "repeat_count": 7,
+  "folds_per_repeat": 3,
+  "feature_count": 231,
+  "observed_stable_edge_pair_count": 1692,
+  "consensus_edge_count": 710,
+  "consensus_minimum_frequency": 0.6666666666666666,
+  "consensus_minimum_partition_count": 14,
+  "consensus_module_count": 60,
+  "largest_consensus_module": 45,
+  "singleton_consensus_modules": 48,
+  "q2_candidate_count": 46,
+  "q2_candidate_target_count": 25,
+  "q2_target_count": 30,
+  "q2_targets_without_candidates": [
+    "A_hops_citrus",
+    "A_hops_tropical",
+    "A_malt_bread",
+    "F_hops_citrus",
+    "F_malt_grain"
+  ],
+  "derived_read_only_count": 4,
+  "bounded_context_count": 16,
+  "causal_claims": false,
+  "community_label_alignment_used": false
+}

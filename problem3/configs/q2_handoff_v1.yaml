@@ -1,0 +1,60 @@
+network:
+  repeat_directories:
+    - problem2/artifacts/q2_network_repeat0_full_v1
+    - problem2/artifacts/q2_network_stability_confirmation_v1
+    - problem2/artifacts/q2_network_repeat2_v1
+    - problem2/artifacts/q2_network_repeat3_v1
+    - problem2/artifacts/q2_network_repeat4_v1
+    - problem2/artifacts/q2_network_repeat5_v1
+    - problem2/artifacts/q2_network_repeat6_v1
+  edge_file: network_edges_confirmation.parquet
+  node_file: network_nodes_confirmation.csv
+  variant: stable_filtered
+  expected_repeats: 7
+  expected_folds_per_repeat: 3
+  expected_features: 231
+  consensus_minimum_frequency: 0.6666666666666666
+  consensus_minimum_sign_consistency: 0.90
+
+inputs:
+  candidate_catalog: problem2/freezes/problem2_v1/candidates/candidate_catalog.csv
+  target_decisions: problem2/freezes/problem2_v1/candidates/target_decisions.csv
+  field_dictionary: problem2/artifacts/preflight_v1/field_dictionary.csv
+  chemical_feature_schema: problem3/artifacts/preflight_v1/chemical_feature_schema.csv
+
+actionability:
+  # These are generated summaries of other chemical columns and therefore must
+  # never be optimized as independent coordinates.
+  derived_read_only:
+    - esters_sum
+    - aroma_hops_sum
+    - acids_sum
+    - sulfur_sum
+  # These are useful bounded context/quality variables. Their values can be
+  # conditioned on or constrained, but Q3 must not call them direct recipe
+  # controls without a separate process-to-chemistry model.
+  bounded_context:
+    - SO2.mg.L.
+    - acetic_acid.g.L.
+    - ammonia.mg.L.
+    - color.EBC.
+    - betaglucan.mg.L.
+    - lactic_acid.mg.L.
+    - glycerol
+    - iron
+    - pH
+    - protein.g.L.
+    - bitterness
+    - GFS
+    - ethanol..v.v.
+    - CO2.PSI.
+    - unfermentables
+    - kcalperc
+  defect_chemical_features:
+    - DMS
+    - X2.3.butanedione
+    - X4VG
+    - X.E..2.nonenal
+
+runtime:
+  output_root: problem3/interfaces/q2_handoff_v1
