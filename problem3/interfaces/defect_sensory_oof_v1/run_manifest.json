@@ -1,0 +1,26 @@
+{
+  "run_id": "defect_sensory_oof_v1",
+  "created_at": "2026-10-25T22:06:05.968413+08:00",
+  "elapsed_seconds": 104.1058142070001,
+  "python": "3.9.18 | packaged by conda-forge | (main, Dec 23 2023, 16:33:10) \n[GCC 12.3.0]",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "packages": {
+    "numpy": "1.24.3",
+    "pandas": "1.5.3",
+    "scipy": "1.10.1",
+    "scikit_learn": "1.2.2",
+    "joblib": "1.2.0"
+  },
+  "models": [
+    "global_mean",
+    "style_mean",
+    "extra_trees",
+    "extra_trees_targetwise",
+    "gradient_boosting"
+  ],
+  "n_targets": 5,
+  "outer_repeats": 7,
+  "outer_splits": 3,
+  "inner_splits": 2,
+  "stage_gate_status": "HOLD"
+}

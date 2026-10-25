@@ -1,0 +1,16 @@
+target,selected_family,selection_count,selection_share
+X4vg,extra_trees,10,0.47619047619047616
+X4vg,extra_trees_targetwise,8,0.38095238095238093
+X4vg,gradient_boosting,3,0.14285714285714285
+diacetyl,extra_trees,7,0.3333333333333333
+diacetyl,extra_trees_targetwise,5,0.23809523809523808
+diacetyl,gradient_boosting,9,0.42857142857142855
+dms,extra_trees,5,0.23809523809523808
+dms,extra_trees_targetwise,10,0.47619047619047616
+dms,gradient_boosting,6,0.2857142857142857
+stale_hops,extra_trees,6,0.2857142857142857
+stale_hops,extra_trees_targetwise,10,0.47619047619047616
+stale_hops,gradient_boosting,5,0.23809523809523808
+t2n,extra_trees,9,0.42857142857142855
+t2n,extra_trees_targetwise,8,0.38095238095238093
+t2n,gradient_boosting,4,0.19047619047619047
