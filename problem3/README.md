@@ -1,6 +1,6 @@
 # 问题三：风格条件生成与迁移
 
-问题三的上游交接和前置工程已经完成，尚未开始生成器选型。开始构建前先阅读根目录的
+问题三已完成生成、Pils/Lager -> Tripel 迁移、冻结 Q1 感官预测、相对 0--6 报告和外部三锚点审计的工程闭环。该闭环是可部署/可重放产物，不等于正式外折冠军通过。开始工作前先阅读根目录的
 `AGENTS.md`、`AGENTS_2.md`、`problem3/AGENTS.md`、`CONTEXT.md` 以及问题一冻结说明。
 
 建议按以下层次维护：
@@ -33,4 +33,16 @@ python problem3/scripts/run_problem3_preflight.py \
 - `interfaces/defect_sensory_oof_v1/`：五个缺陷感官目标的 7 重复×3 折 OOF 证据；
 - `artifacts/interfaces/q1_full_predictor_v1/`：可再生成的 Q1 全数据推理器，仅用于部署预测，不作为泛化证据。
 
-Q1 仍为 `HOLD`（13 A、11 B、6 C）；Q2 为 `READY`。缺陷感官中只有 `X4vg` 达到 A 级，`stale_hops` 为 C 级，因此后者只能作探索性监控，不能成为硬约束。
+Q1 仍为 `HOLD`（13 A、11 B、6 C）；Q2 以 `READY_WITH_LIMITATIONS` 口径交接。缺陷感官中只有 `X4vg` 达到 A 级，`stale_hops` 为 C 级，因此后者只能作探索性监控，不能成为硬约束。
+
+## 工程闭环入口
+
+```bash
+cd /home/yu/桌面/A
+conda run --no-capture-output -p /home/yu/桌面/A/.conda/envs/beer-q1 \
+  python problem3/scripts/run_engineering_closure.py \
+  --config problem3/configs/problem3_engineering_closure_v1.yaml
+```
+
+结果说明见 `docs/q3_engineering_closure_v1.md`，精简冻结记录见
+`freezes/problem3_v1/README.md`。当前仍保留 `HOLD_NO_GENERATOR_CHAMPION`：工程主链已闭合，正式重复外层迁移证据和新的独立外部确认尚未完成。

@@ -105,6 +105,26 @@ def test_illegal_defect_sample_triggers_absolute_and_relative_checks():
     assert details.set_index("defect").loc["trans-2-nonenal", "violation_count"] == 1
 
 
+def test_transfer_allows_existing_absolute_excess_but_not_worsening():
+    generated = pd.DataFrame({"DMS": [1.0, 1.1]})
+    source = pd.DataFrame({"DMS": [1.0, 1.0]})
+    registry = pd.DataFrame(
+        [
+            {
+                "defect": "DMS",
+                "chemical_field": "DMS",
+                "chemical_field_present": True,
+                "inverse_transform": "pow10",
+                "constraint_mode": "absolute_excess_nonincrease",
+                "threshold_used": 5.0,
+            }
+        ]
+    )
+    failed, details = defect_violation_mask(generated, registry, source=source)
+    assert failed.tolist() == [False, True]
+    assert details.loc[0, "policy"] == "source_absolute_excess_nonincrease"
+
+
 def test_near_neighbor_gate_is_calibrated_against_real_validation_rate():
     training = _toy_features(20)
     geometry = FoldGeometry.fit(training)

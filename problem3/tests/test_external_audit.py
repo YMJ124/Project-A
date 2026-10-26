@@ -1,8 +1,14 @@
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
-from beer_q3.external_audit import build_external_cohorts, freeze_external_audit
+from beer_q3.external_audit import (
+    build_external_cohorts,
+    freeze_external_audit,
+    score_external_anchor_audit,
+    transform_public_descriptor_profiles,
+)
 
 
 def test_locked_public_cohort_counts_and_missing_profiles(tmp_path):
@@ -44,3 +50,64 @@ def test_kriek_match_requires_a_complete_word():
     cohorts = build_external_cohorts(pd.DataFrame(columns))
     assert cohorts.loc[cohorts["cohort"] == "Kriek_strict", "key"].tolist() == [1]
     assert cohorts.loc[cohorts["cohort"] == "Lambic_main", "key"].tolist() == [2]
+
+
+def test_external_anchor_scoring_uses_public_beer_bootstrap_only():
+    descriptor_names = [
+        "Astringency", "Body", "Alcohol", "Bitter", "Sweet", "Sour",
+        "Salty", "Fruits", "Hoppy", "Spices", "Malty",
+    ]
+    public = pd.DataFrame(
+        {
+            "key": range(1, 7),
+            "Name": [f"b{i}" for i in range(6)],
+            "Description": [""] * 6,
+            "Style": ["Tripel", "Tripel", "Lambic - Fruit", "Lambic - Fruit", "Lambic - Gueuze", "Lambic - Gueuze"],
+        }
+    )
+    for descriptor in descriptor_names:
+        public[descriptor] = 1.0
+    public.loc[:1, ["Fruits", "Malty"]] = [8.0, 5.0]
+    public.loc[2:3, ["Fruits", "Hoppy"]] = [9.0, 1.0]
+    public.loc[4:5, ["Fruits", "Hoppy"]] = [5.0, 2.0]
+    cohorts = pd.DataFrame(
+        {
+            "cohort": ["Tripel", "Tripel", "Kriek_strict", "Kriek_strict", "Lambic_main", "Lambic_main"],
+            "key": range(1, 7),
+            "eligible_for_external_anchor_audit": [True] * 6,
+        }
+    )
+    mapping = pd.DataFrame(
+        {
+            "external_descriptor": ["Malty", "Hoppy", "Fruits"],
+            "q1_targets": ["A_malt_all;F_malt_all", "A_hops_all;F_hops_all", "A_esters_all;F_esters_all;A_esters_fruity;F_esters_fruity"],
+        }
+    )
+    targets = sorted({value for values in mapping["q1_targets"] for value in values.split(";")})
+    training = pd.DataFrame({target: np.linspace(-1, 1, 12) for target in targets})
+    rows = []
+    style_values = {"Tripel": 1.0, "Kriek": 0.5, "Lambic": -0.5}
+    for style, value in style_values.items():
+        for target in targets:
+            rows.append(
+                {
+                    "sample_id": style,
+                    "target_style": style,
+                    "target": target,
+                    "standardized_prediction": value,
+                }
+            )
+    result = score_external_anchor_audit(
+        public,
+        cohorts,
+        mapping,
+        pd.DataFrame(rows),
+        training,
+        bootstrap_resamples=10,
+        seed=7,
+    )
+    assert len(result["scorecard"]) == 3
+    assert len(result["bootstrap"]) == 30
+    assert result["summary"]["used_for_model_selection"] is False
+    transformed = transform_public_descriptor_profiles(public)
+    assert np.allclose(transformed.sum(axis=1), 1.0)

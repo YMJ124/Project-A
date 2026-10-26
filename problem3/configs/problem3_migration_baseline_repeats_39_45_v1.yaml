@@ -1,0 +1,42 @@
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+interfaces:
+  folds_csv: "problem3/artifacts/folds/q3_sparse_migration_confirmation_repeats_39_45_v1.csv"
+  q1_tuning_csv: "problem1/freezes/problem1_v1/base_run_metadata/tuning_trials.csv"
+  q1_source_registry_csv: "problem1/freezes/problem1_v1/source_registry.csv"
+  defect_registry_csv: "problem3/artifacts/preflight_v1/defect_constraint_registry.csv"
+  actionability_registry_csv: "problem3/interfaces/q2_handoff_v1/actionability_registry.csv"
+  derived_formula_yaml: "problem3/configs/derived_feature_formulas_v1.yaml"
+migration:
+  source_style: "Pils/Lager"
+  target_style: "Tripel"
+  interpolation_budgets: [0.25, 0.5, 0.75, 1.0]
+  module_budgets: [3, 6, 12]
+  n_components: 10
+  coral_shrinkage: 0.5
+  sinkhorn_epsilon: 0.5
+  sinkhorn_iterations: 300
+  selection_gain_fraction: 0.5
+  range_policy: "training_or_paired_source_envelope_no_further_excursion"
+evaluation:
+  repeats: [39, 40, 41, 42, 43, 44, 45]
+  folds: [0, 1, 2]
+  include_frozen_q1_sensory: true
+selection:
+  minimum_row_positive_rate_style: 0.80
+  minimum_row_positive_rate_chemistry: 0.80
+  minimum_repeat_mean_wins_style: 5
+  minimum_repeat_mean_wins_chemistry: 5
+  minimum_source_median_wins_style: 9
+  minimum_source_median_wins_chemistry: 9
+  minimum_row_positive_rate_ab_sensory: 0.70
+  minimum_repeat_mean_wins_ab_sensory: 5
+  minimum_source_median_wins_ab_sensory: 8
+runtime:
+  run_name: "q3_migration_baseline_repeats_39_45_v1"
+  output_root: "problem3/artifacts/q3_migration_baseline_repeats_39_45_v1"
+  n_jobs: -1

@@ -1,0 +1,43 @@
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+
+interfaces:
+  defect_registry_csv: "problem3/artifacts/preflight_v1/defect_constraint_registry.csv"
+  actionability_registry_csv: "problem3/interfaces/q2_handoff_v1/actionability_registry.csv"
+  derived_formula_yaml: "problem3/configs/derived_feature_formulas_v1.yaml"
+  q1_source_registry_csv: "problem1/freezes/problem1_v1/source_registry.csv"
+  q1_oof_predictions_parquet: "problem1/freezes/problem1_v1/champion_artifacts/oof_predictions.parquet"
+  q1_full_predictor_joblib: "problem3/artifacts/interfaces/q1_full_predictor_v1/q1_full_predictor.joblib"
+
+generation:
+  target_styles: [Tripel, Kriek, Lambic]
+  prior_strength: 5.0
+  skeptic_blend_weight: 0.5
+  minimum_training_distance_quantile: 0.05
+
+migration:
+  source_style: "Pils/Lager"
+  target_style: "Tripel"
+  interpolation_budgets: [0.25, 0.5, 0.75, 1.0]
+  module_budgets: [3, 6, 12]
+  n_components: 10
+  coral_shrinkage: 0.5
+  sinkhorn_epsilon: 0.5
+  sinkhorn_iterations: 300
+  selection_gain_fraction: 0.5
+
+external:
+  beer_csv: "test data/beer_data_set.csv"
+  cohort_registry_csv: "problem3/interfaces/external_test_data_v1/cohort_registry.csv"
+  anchor_mapping_csv: "problem3/interfaces/external_test_data_v1/anchor_mapping.csv"
+  bootstrap_resamples: 2000
+  bootstrap_seed: 20621027
+
+runtime:
+  seed: 20621027
+  run_name: "q3_engineering_closure_v1"
+  output_root: "problem3/artifacts/q3_engineering_closure_v1"

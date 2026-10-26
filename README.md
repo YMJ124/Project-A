@@ -1,21 +1,25 @@
-# MathorCup 2026 赛道 A：问题 1
+# MathorCup 2026 赛道 A：化学—感官—生成闭环
 
-当前只处理第一阶段：用 231 个化学/理化特征预测 30 个标准化 Aroma/Flavour 连续目标。0–6 等级映射尚未开始。
+项目已打通三问主体链路：231 维化学谱预测 30 个标准化 Aroma/Flavour 目标，以稳定置换重要性和化学共变网络构建解释证据，再进行 Tripel/Kriek/Lambic 条件生成与 Pils/Lager -> Tripel 迁移。
 
-实现遵守 `AGENTS.md`：只按整数 `beer` 对齐，风格只用于折叠、基线和误差分析，所有填补、缩放、PLS 与超参数选择都在训练折内部完成。
+所有正式证据继续遵守折内拟合、重复外层 OOF、硬约束、新奇性检查和预注册采用线。0--6 映射是 `relative_reconstructed_scale` 展示层，不是原始人工评分的可验证逆变换。
 
 ## 目录边界
 
 - `problem1/`：问题一的配置、代码、测试、协议和冻结成果；
 - `problem2/`：问题二的前置审计、问题一冠军重建接口、网络与解释代码；
-- `problem3/`：问题三的预留目录，开始实现前需新增对应工作约定；
+- `problem3/`：条件生成、跨风格迁移、化学/缺陷硬约束、Q1/Q2 接口和外部方向审计；
 - 根目录：共享数据说明、持久工作约定、项目构建文件和跨问题入口。
 
 ## 当前最新结果
 
-当前严格冠军为 `q1_newseed2031_final_hybrid_v2`：以折内调参的多输出 Extra Trees 为主体，并仅纳入已经独立新种子确认的 13 个逐目标替换或后处理源。在 `20311124` 起始的 7 个重复外层折上，中位 R2=0.1721、Spearman=0.4103、RMSE=0.4800，相对全局/风格基线分别改善 9.33%/4.46%，A=13、A/B=24。阶段状态仍为 `HOLD`。
+- Q1：冻结冠军 `q1_newseed2031_final_hybrid_v2`，中位 R2=0.1721、Spearman=0.4103、RMSE=0.4800，相对全局/风格基线改善 9.33%/4.46%，A=13、A/B=24；状态仍为 `HOLD`。
+- Q2：20/20 评估项通过，46 个候选覆盖 25/30 目标；可用但仍需显式报告关联性、不完整 Top-3 和上游 Q1 限制。
+- Q3 生成：秩相关分层抽样是允许少量结构损失时的当前综合最优工程方案，但 Q2 边丢失率硬计数还差 1 格，正式状态为 `HOLD_NO_GENERATOR_CHAMPION`。
+- Q3 迁移：migration v2 在全新 repeats 32--38 上实现 77/77 覆盖与风格/化学改善，Q1 A/B 感官改善 75/77；它是当前正式默认迁移方案。
+- 工程闭环：49 个生成谱和 11 个部署迁移已打通化学、Q2、Q1、相对 0--6 和外部三锚点审计，状态为 `ENGINEERING_CLOSURE_COMPLETE_WITH_LIMITATIONS`。
 
-该结果相比同折 ET 对照将 A 从 4 增到 8、A/B 从 22 增到 23，但仍未满足风格基线改善 5%、A>=18 和 A/B>=24 的预声明门槛，因此仍为 `HOLD`，暂不进入 0–6 映射。完整产物见 `artifacts/problem1/q1_newseed_expanded_specialist_hybrid_v1/`。
+当前方案的完整限制、剩余缺口和后续优化顺序见 [`REMAINING_OPTIMIZATION_PLAN.md`](REMAINING_OPTIMIZATION_PLAN.md)。Q3 工程闭环与迁移确认分别见 `problem3/docs/q3_engineering_closure_v1.md` 和 `problem3/docs/q3_migration_confirmation_results_v2.md`。
 
 ## 环境与快速检查
 

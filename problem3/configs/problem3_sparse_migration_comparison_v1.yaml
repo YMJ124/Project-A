@@ -1,0 +1,16 @@
+interfaces:
+  baseline_root: "problem3/artifacts/q3_migration_baseline_repeats_39_45_v1"
+  candidate_root: "problem3/artifacts/q3_sparse_migration_confirmation_v1"
+selection:
+  minimum_style_gain_retention: 0.75
+  minimum_chemistry_gain_retention: 0.75
+  minimum_ab_sensory_mean_improvement_retention: 0.90
+  maximum_additional_ab_sensory_failures: 2
+  maximum_changed_fields_ratio: 0.80
+  maximum_changed_modules_ratio: 0.80
+  maximum_standardized_l1_ratio: 1.00
+  maximum_standardized_l2_ratio: 1.00
+  minimum_repeats_with_both_field_and_module_reduction: 4
+runtime:
+  run_name: "q3_sparse_migration_comparison_v1"
+  output_root: "problem3/artifacts/q3_sparse_migration_comparison_v1"

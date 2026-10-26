@@ -334,9 +334,21 @@ def defect_violation_mask(
         feature = str(row.chemical_field)
         values = _inverse_defect(generated[feature], str(row.inverse_transform))
         if row.constraint_mode == "absolute_excess_nonincrease":
-            limit = float(row.threshold_used)
-            violation = values > limit + 1e-12
-            policy = "locked_absolute_threshold"
+            threshold = float(row.threshold_used)
+            if source is not None:
+                if len(source) != len(generated):
+                    raise ValueError("Transfer source and generated row counts differ")
+                source_values = _inverse_defect(
+                    source[feature], str(row.inverse_transform)
+                )
+                limit_values = np.maximum(source_values, threshold)
+                violation = values > limit_values + 1e-12
+                limit = np.nan
+                policy = "source_absolute_excess_nonincrease"
+            else:
+                limit = threshold
+                violation = values > limit + 1e-12
+                policy = "locked_absolute_threshold"
         elif row.constraint_mode == "relative_concentration_nonincrease":
             if source is not None:
                 if len(source) != len(generated):
