@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "formula": "log10(sum(calibrated_concentration / threshold_median))",
+  "source_metadata_sha256": "f2316766792111d98281bd35c8403682be8c8069d166a7a7d5887ffbb227700a",
+  "component_count": 21,
+  "derived_feature_count": 4,
+  "all_observed_rows_within_tolerance": true,
+  "maximum_absolute_error": 3.4134689519405015e-08,
+  "uses_sensory_targets": false,
+  "role": "deterministic_postprocessing_not_model_selection"
+}

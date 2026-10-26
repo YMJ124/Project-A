@@ -1,0 +1,5 @@
+derived_feature,observed_rows,missing_observed_rows,maximum_absolute_error,rmse,within_tolerance
+esters_sum,250,0,7.434290960617318e-10,3.4348389748283727e-10,True
+aroma_hops_sum,237,13,3.4134689519405015e-08,4.196541176795936e-09,True
+acids_sum,250,0,9.495394470704355e-10,3.662157497072173e-10,True
+sulfur_sum,250,0,8.183379529569379e-10,3.330288184737987e-10,True

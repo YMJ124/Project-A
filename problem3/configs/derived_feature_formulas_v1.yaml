@@ -1,0 +1,39 @@
+source:
+  metadata_xlsx: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/8.xlsx"
+  expected_sha256: "f2316766792111d98281bd35c8403682be8c8069d166a7a7d5887ffbb227700a"
+  threshold_column: threshold_median
+  formula: "log10(sum(calibrated_concentration / threshold_median))"
+
+derived_features:
+  esters_sum:
+    - {feature: ethyl_isovalerate, threshold: 0.1, inverse_transform: pow10, zero_sentinel: -4.487004489}
+    - {feature: ethyl_hexanoate, threshold: 0.225, inverse_transform: pow10, zero_sentinel: -2.476904162}
+    - {feature: isopentyl_acetate, threshold: 0.6, inverse_transform: pow10, zero_sentinel: -1.189498652}
+    - {feature: ethyl_octanoate, threshold: 0.75, inverse_transform: pow10}
+    - {feature: ethyl_decanoate, threshold: 1.035, inverse_transform: pow10, zero_sentinel: -2.975719624}
+    - {feature: phenethyl_acetate, threshold: 1.29, inverse_transform: pow10, zero_sentinel: -2.221667831}
+    - {feature: ethyl_propionate, threshold: 10.0, inverse_transform: pow10, zero_sentinel: -2.44279366}
+    - {feature: ethyl_acetate, threshold: 23.0, inverse_transform: pow10}
+  aroma_hops_sum:
+    - {feature: linalool, threshold: 0.0045, inverse_transform: identity}
+    - {feature: geraniol, threshold: 0.023, inverse_transform: identity}
+    - {feature: citronellol, threshold: 0.0245, inverse_transform: identity}
+    - {feature: E.caryophyllene, threshold: 0.23, inverse_transform: identity}
+    - {feature: alpha.humulene, threshold: 0.625, inverse_transform: identity}
+    - {feature: X1.alpha.terpineol, threshold: 1.5, inverse_transform: identity}
+  acids_sum:
+    - {feature: acetic_acid.g.L., threshold: 0.145, inverse_transform: pow10, zero_sentinel: -1.756961951}
+    - {feature: lactic_acid.mg.L., threshold: 400.0, inverse_transform: pow10}
+  sulfur_sum:
+    - {feature: CS2, threshold: 50.0, inverse_transform: pow10, zero_sentinel: -2.146291652}
+    - {feature: DES, threshold: 1.2, inverse_transform: pow10, zero_sentinel: -1.905266906}
+    - {feature: DMS, threshold: 19.0, inverse_transform: pow10, zero_sentinel: 0.0462112}
+    - {feature: H2S, threshold: 3.5, inverse_transform: pow10, zero_sentinel: -1.586071886}
+    - {feature: SO2.mg.L., threshold: 11.0, inverse_transform: pow10, zero_sentinel: -1.0}
+
+validation:
+  expected_rows: 250
+  absolute_tolerance: 5.0e-8
+
+runtime:
+  output_root: "problem3/interfaces/derived_feature_formulas_v1"

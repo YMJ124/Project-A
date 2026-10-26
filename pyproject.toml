@@ -26,10 +26,10 @@ boosting = [
 test = ["pytest==7.4.4"]
 
 [tool.setuptools]
-package-dir = {"beer_q1" = "problem1/src/beer_q1", "beer_q2" = "problem2/src/beer_q2"}
-packages = ["beer_q1", "beer_q2"]
+package-dir = {"beer_q1" = "problem1/src/beer_q1", "beer_q2" = "problem2/src/beer_q2", "beer_q3" = "problem3/src/beer_q3"}
+packages = ["beer_q1", "beer_q2", "beer_q3"]
 
 [tool.pytest.ini_options]
-pythonpath = ["problem1/src", "problem2/src"]
-testpaths = ["problem1/tests", "problem2/tests"]
+pythonpath = ["problem1/src", "problem2/src", "problem3/src"]
+testpaths = ["problem1/tests", "problem2/tests", "problem3/tests"]
 addopts = "-q"

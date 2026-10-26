@@ -1,0 +1,25 @@
+data:
+  beer_csv: test data/beer_data_set.csv
+  descriptor_xlsx: test data/Beer Descriptors Simplified.xlsx
+protocol:
+  expected_cohort_counts:
+    Tripel: 50
+    Kriek_strict: 16
+    Lambic_main: 147
+    Pils_Lager_broad: 1050
+    Pils_Lager_narrow: 350
+anchors:
+- external_descriptor: Malty
+  q1_targets: A_malt_all;F_malt_all
+  aggregation: fold_training_standardize_then_mean
+  evidence_role: secondary_directional_audit
+- external_descriptor: Hoppy
+  q1_targets: A_hops_all;F_hops_all
+  aggregation: fold_training_standardize_then_mean
+  evidence_role: secondary_directional_audit
+- external_descriptor: Fruits
+  q1_targets: A_esters_all;F_esters_all;A_esters_fruity;F_esters_fruity
+  aggregation: fold_training_standardize_then_mean
+  evidence_role: secondary_directional_audit
+runtime:
+  output_root: problem3/interfaces/external_test_data_v1

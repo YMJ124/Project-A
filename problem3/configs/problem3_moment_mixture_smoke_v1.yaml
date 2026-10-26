@@ -1,0 +1,40 @@
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+interfaces:
+  folds_csv: "problem1/freezes/problem1_v1/base_run_metadata/folds.csv"
+  defect_registry_csv: "problem3/artifacts/preflight_v1/defect_constraint_registry.csv"
+  consensus_edges_csv: "problem3/interfaces/q2_handoff_v1/consensus_edges.csv"
+  derived_formula_yaml: "problem3/configs/derived_feature_formulas_v1.yaml"
+  baseline_discovery_root: "problem3/artifacts/q3_skeptic_half_shrink_screening_v1"
+styles:
+  generation_targets: [Tripel, Kriek, Lambic]
+screening:
+  baseline_prior_strength: 5.0
+  baseline_method_source: "skeptic_spearman_rank_gaussian_copula_prior_5_blend_0.5_distance_q0.05"
+  baseline_method_label: "skeptic_spearman_rank_gaussian_copula_prior_5_blend_0.5_distance_q0.05"
+  prior_strengths: [5.0]
+  use_moment_preserving_mixture: true
+  skeptic_blend_weight: 0.5
+  skeptic_minimum_training_distance_quantile: 0.05
+  mixture_components: 2
+  mixture_factors: 5
+  mixture_between_variance_cap: 0.5
+  mixture_min_component_size: 2
+selection:
+  minimum_style_hit_gain: -0.05
+  maximum_structure_pass_rate_drop: 0.0
+  minimum_q2_edge_strength_pass_rate: 0.7777777777777778
+  minimum_q2_edge_strength_gain: 0.0
+evaluation:
+  repeats: [0]
+  folds: [0]
+  bootstrap_resamples: 500
+  bootstrap_seed: 20261026
+runtime:
+  run_name: "q3_moment_mixture_smoke_v1"
+  output_root: "problem3/artifacts/q3_moment_mixture_smoke_v1"
+

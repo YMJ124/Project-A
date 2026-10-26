@@ -1,0 +1,27 @@
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+interfaces:
+  folds_csv: "problem3/artifacts/folds/q3_confirmation_repeats_7_10_v1.csv"
+  q1_tuning_csv: "problem1/freezes/problem1_v1/base_run_metadata/tuning_trials.csv"
+  q1_source_registry_csv: "problem1/freezes/problem1_v1/source_registry.csv"
+  q1_oof_predictions_parquet: "problem1/freezes/problem1_v1/champion_artifacts/oof_predictions.parquet"
+  candidate_root: "problem3/artifacts/q3_skeptic_half_shrink_confirmation_v1"
+  baseline_root: "problem3/artifacts/q3_baseline_confirmation_reference_fresh_v1"
+methods:
+  candidate: "skeptic_spearman_rank_gaussian_copula_prior_5_blend_0.5_distance_q0.05"
+  baseline: "rank_gaussian_copula"
+styles:
+  generation_targets: [Tripel, Kriek, Lambic]
+evaluation:
+  repeats: [7]
+  folds: [0]
+  real_real_resamples: 100
+runtime:
+  run_name: "q3_skeptic_half_shrink_sensory_smoke_v1"
+  output_root: "problem3/artifacts/q3_skeptic_half_shrink_sensory_smoke_v1"
+  n_jobs: -1
+

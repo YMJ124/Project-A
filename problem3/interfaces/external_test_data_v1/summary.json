@@ -1,0 +1,66 @@
+{
+  "status": "PASS_EXTERNAL_COHORTS_LOCKED_NOT_SCORED",
+  "dataset_rows": 5558,
+  "dataset_columns": 21,
+  "unique_keys": 5558,
+  "duplicate_rows": 0,
+  "missing_name_rows": 2,
+  "cohort_counts": {
+    "Kriek_strict": 16,
+    "Lambic_main": 147,
+    "Pils_Lager_broad": 1050,
+    "Pils_Lager_narrow": 350,
+    "Tripel": 50
+  },
+  "missing_descriptor_profiles": {
+    "Kriek_strict": 0,
+    "Lambic_main": 11,
+    "Pils_Lager_broad": 7,
+    "Pils_Lager_narrow": 0,
+    "Tripel": 0
+  },
+  "descriptor_dictionary": {
+    "sheet_count": 3,
+    "sheets": {
+      "Mouthfeel": {
+        "rows": 97,
+        "columns": 6,
+        "impact_columns": [
+          "Impact",
+          "Impact.1",
+          "Impact.2"
+        ]
+      },
+      "Taste": {
+        "rows": 128,
+        "columns": 8,
+        "impact_columns": [
+          "Impact",
+          "Impact.1",
+          "Impact.2",
+          "Impact.3"
+        ]
+      },
+      "Flavor And Aroma": {
+        "rows": 209,
+        "columns": 8,
+        "impact_columns": [
+          "Impact",
+          "Impact.1",
+          "Impact.2",
+          "Impact.3"
+        ]
+      }
+    },
+    "populated_impact_values": 1218,
+    "all_populated_impacts_equal_one": true
+  },
+  "anchor_count": 3,
+  "processing_locked": {
+    "descriptor_transform": "log1p_then_row_composition",
+    "zero_descriptor_total": "missing_profile_excluded_from_anchor_audit",
+    "uncertainty_unit": "real_public_beer_bootstrap"
+  },
+  "used_for_model_selection": false,
+  "external_scores_computed": false
+}

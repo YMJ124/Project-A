@@ -1,0 +1,12 @@
+{
+  "beer_data_set.csv": {
+    "path": "/home/yu/桌面/A/test data/beer_data_set.csv",
+    "bytes": 1817734,
+    "sha256": "bdfd28f8c75a0da1d86073198aa5341cfe19cabece56827a970915936e0b461a"
+  },
+  "Beer Descriptors Simplified.xlsx": {
+    "path": "/home/yu/桌面/A/test data/Beer Descriptors Simplified.xlsx",
+    "bytes": 27751,
+    "sha256": "161e8a841200f74a8158086192948dee25720576bb5fd28927054da05976f329"
+  }
+}

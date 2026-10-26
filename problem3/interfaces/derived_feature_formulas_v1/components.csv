@@ -1,0 +1,22 @@
+derived_feature,component,threshold_median,inverse_transform,zero_sentinel,source_sheet
+esters_sum,ethyl_isovalerate,0.1,pow10,-4.487004489,Sensory thresholds
+esters_sum,ethyl_hexanoate,0.225,pow10,-2.476904162,Sensory thresholds
+esters_sum,isopentyl_acetate,0.6,pow10,-1.189498652,Sensory thresholds
+esters_sum,ethyl_octanoate,0.75,pow10,,Sensory thresholds
+esters_sum,ethyl_decanoate,1.035,pow10,-2.975719624,Sensory thresholds
+esters_sum,phenethyl_acetate,1.29,pow10,-2.221667831,Sensory thresholds
+esters_sum,ethyl_propionate,10.0,pow10,-2.44279366,Sensory thresholds
+esters_sum,ethyl_acetate,23.0,pow10,,Sensory thresholds
+aroma_hops_sum,linalool,0.0045,identity,,Sensory thresholds
+aroma_hops_sum,geraniol,0.023,identity,,Sensory thresholds
+aroma_hops_sum,citronellol,0.0245,identity,,Sensory thresholds
+aroma_hops_sum,E.caryophyllene,0.23,identity,,Sensory thresholds
+aroma_hops_sum,alpha.humulene,0.625,identity,,Sensory thresholds
+aroma_hops_sum,X1.alpha.terpineol,1.5,identity,,Sensory thresholds
+acids_sum,acetic_acid.g.L.,0.145,pow10,-1.756961951,Sensory thresholds
+acids_sum,lactic_acid.mg.L.,400.0,pow10,,Sensory thresholds
+sulfur_sum,CS2,50.0,pow10,-2.146291652,Sensory thresholds
+sulfur_sum,DES,1.2,pow10,-1.905266906,Sensory thresholds
+sulfur_sum,DMS,19.0,pow10,0.0462112,Sensory thresholds
+sulfur_sum,H2S,3.5,pow10,-1.586071886,Sensory thresholds
+sulfur_sum,SO2.mg.L.,11.0,pow10,-1.0,Sensory thresholds

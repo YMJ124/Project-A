@@ -1,0 +1,34 @@
+data:
+  chemicals_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/1.csv"
+  sensory_csv: "2026年MathorCup大数据挑战赛-赛道A初赛/附件/4.csv"
+  id_column: beer
+  style_column: tasting_category_fine
+  forbidden_input_columns: [beer, beer_id, tasting_category_fine]
+interfaces:
+  folds_csv: "problem3/artifacts/folds/q3_comprehensive_confirmation_repeats_18_24_v2.csv"
+  defect_registry_csv: "problem3/artifacts/preflight_v1/defect_constraint_registry.csv"
+  consensus_edges_csv: "problem3/interfaces/q2_handoff_v1/consensus_edges.csv"
+  derived_formula_yaml: "problem3/configs/derived_feature_formulas_v1.yaml"
+styles:
+  generation_targets: [Tripel, Kriek, Lambic]
+baselines:
+  knn_jitter:
+    neighbors: 3
+    jitter_min: 0.05
+    jitter_max: 0.35
+  pca_shrink_gaussian:
+    n_components: 15
+    prior_strength: 20.0
+  rank_gaussian_copula:
+    prior_strength: 5.0
+evaluation:
+  repeats: [18, 19, 20, 21, 22, 23, 24]
+  folds: [0, 1, 2]
+  real_real_resamples: 100
+  bootstrap_resamples: 2000
+  bootstrap_seed: 20611124
+runtime:
+  phase: "confirmation_reference"
+  run_name: "q3_baseline_reference_repeats_18_24_v2"
+  output_root: "problem3/artifacts/q3_baseline_reference_repeats_18_24_v2"
+  n_jobs: -1
